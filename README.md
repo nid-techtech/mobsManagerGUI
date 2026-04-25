@@ -1,0 +1,2 @@
+# mobsManagerGUI
+techTeCraftに導入しているMobsManager PluginのconfigファイルをGUIで編集するアプリ
