@@ -2,6 +2,7 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use std::path::Path;
 use chrono::Local;
+use tauri::Manager;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "PascalCase")]
@@ -104,12 +105,11 @@ pub fn run() {
 
         app.on_menu_event(move |app, event| {
           if event.id() == "settings" {
-            let handle = app.handle();
-            if let Some(window) = handle.get_webview_window("settings") {
+            if let Some(window) = app.get_webview_window("settings") {
               let _ = window.set_focus();
             } else {
               let _ = tauri::WebviewWindowBuilder::new(
-                handle,
+                app,
                 "settings",
                 tauri::WebviewUrl::App("settings".into())
               )
