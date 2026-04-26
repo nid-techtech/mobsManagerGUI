@@ -349,9 +349,9 @@ export default function App() {
                 <thead>
                   <tr>
                     <th>{t.mobName}</th>
-                    <th>{t.multiverseControl}</th>
+                    <th className="group-separator">{t.multiverseControl}</th>
                     <th>{t.dimensions}</th>
-                    <th>{t.allSpawn}</th>
+                    <th className="group-separator">{t.allSpawn}</th>
                     <th>{t.natural}</th>
                     <th>{t.custom}</th>
                     <th>{t.spawner}</th>
@@ -378,7 +378,7 @@ export default function App() {
                             </span>
                           )}
                         </td>
-                        <td>
+                        <td className="group-separator">
                           <input 
                             type="checkbox" 
                             checked={mob.multiverseControl}
@@ -402,7 +402,7 @@ export default function App() {
                             ))}
                           </select>
                         </td>
-                        <td>
+                        <td className="group-separator">
                           <input 
                             type="checkbox" 
                             checked={currentEntry.AllSpawn}
@@ -701,6 +701,10 @@ export default function App() {
           padding: 14px 12px;
           border-bottom: 1px solid var(--border-color);
           transition: background-color 0.1s;
+        }
+
+        .group-separator {
+          border-left: 2px solid var(--border-color) !important;
         }
 
         .mob-name-cell {
