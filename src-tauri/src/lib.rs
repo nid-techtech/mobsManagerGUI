@@ -73,6 +73,12 @@ struct MenuLabels {
     hide_others: String,
     show_all: String,
     quit: String,
+    file: String,
+    import_mobs: String,
+    import_backup: String,
+    save: String,
+    save_as: String,
+    search: String,
 }
 
 fn get_menu_labels(lang: &str) -> MenuLabels {
@@ -86,6 +92,12 @@ fn get_menu_labels(lang: &str) -> MenuLabels {
             hide_others: "ほかを隠す".to_string(),
             show_all: "すべてを表示".to_string(),
             quit: format!("{}を終了", app_name),
+            file: "ファイル".to_string(),
+            import_mobs: "mobsData.ymlをインポート".to_string(),
+            import_backup: "バックアップからインポート".to_string(),
+            save: "上書き保存".to_string(),
+            save_as: "名前を付けて保存".to_string(),
+            search: "検索".to_string(),
         },
         "zh" => MenuLabels {
             about: format!("关于 {}", app_name),
@@ -95,6 +107,12 @@ fn get_menu_labels(lang: &str) -> MenuLabels {
             hide_others: "隐藏其他".to_string(),
             show_all: "显示全部".to_string(),
             quit: format!("退出 {}", app_name),
+            file: "文件".to_string(),
+            import_mobs: "导入 mobsData.yml".to_string(),
+            import_backup: "从备份导入".to_string(),
+            save: "保存更改".to_string(),
+            save_as: "另存为...".to_string(),
+            search: "搜索...".to_string(),
         },
         _ => MenuLabels {
             about: format!("About {}", app_name),
@@ -104,6 +122,12 @@ fn get_menu_labels(lang: &str) -> MenuLabels {
             hide_others: "Hide Others".to_string(),
             show_all: "Show All".to_string(),
             quit: format!("Quit {}", app_name),
+            file: "File".to_string(),
+            import_mobs: "Import mobsData.yml".to_string(),
+            import_backup: "Import from Backup".to_string(),
+            save: "Save Changes".to_string(),
+            save_as: "Save As...".to_string(),
+            search: "Search...".to_string(),
         }
     }
 }
@@ -137,7 +161,22 @@ fn create_app_menu<R: tauri::Runtime>(handle: &tauri::AppHandle<R>, lang: &str) 
     app_menu.append(&PredefinedMenuItem::separator(handle)?)?;
     app_menu.append(&PredefinedMenuItem::quit(handle, Some(&labels.quit))?)?;
 
-    Menu::with_items(handle, &[&app_menu])
+    let file_menu = Submenu::with_id(handle, "file_menu", &labels.file, true)?;
+    let import_mobs = MenuItem::with_id(handle, "import_mobs", &labels.import_mobs, true, Some("CmdOrCtrl+I"))?;
+    let import_backup = MenuItem::with_id(handle, "import_backup", &labels.import_backup, true, None::<&str>)?;
+    let save = MenuItem::with_id(handle, "save", &labels.save, true, Some("CmdOrCtrl+S"))?;
+    let save_as = MenuItem::with_id(handle, "save_as", &labels.save_as, true, Some("CmdOrCtrl+Shift+S"))?;
+    let search = MenuItem::with_id(handle, "search", &labels.search, true, Some("CmdOrCtrl+F"))?;
+
+    file_menu.append(&import_mobs)?;
+    file_menu.append(&import_backup)?;
+    file_menu.append(&PredefinedMenuItem::separator(handle)?)?;
+    file_menu.append(&save)?;
+    file_menu.append(&save_as)?;
+    file_menu.append(&PredefinedMenuItem::separator(handle)?)?;
+    file_menu.append(&search)?;
+
+    Menu::with_items(handle, &[&app_menu, &file_menu])
 }
 
 #[tauri::command]
@@ -195,6 +234,9 @@ pub fn run() {
               .always_on_top(true)
               .build();
             }
+          } else {
+            // Forward other menu events to frontend
+            let _ = app.emit(id, ());
           }
         });
       }

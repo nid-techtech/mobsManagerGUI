@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { invoke } from '@tauri-apps/api/core';
-import { open } from '@tauri-apps/plugin-dialog';
+import { open, save } from '@tauri-apps/plugin-dialog';
 import { listen } from '@tauri-apps/api/event';
 import { translations, type Language } from '../i18n/translations';
 
@@ -42,6 +42,7 @@ export default function App() {
 
   // UI state for each mob (multiverseControl, selectedDimension)
   const [mobUIState, setMobUIState] = useState<{ [name: string]: { multiverseControl: boolean, selectedDimension: string } }>({});
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const t = translations[lang];
 
@@ -106,12 +107,24 @@ export default function App() {
     };
     loadLists();
 
+    // Menu event listeners
+    const unlistenImport = listen('import_mobs', () => handleImport());
+    const unlistenBackup = listen('import_backup', () => handleImportBackup());
+    const unlistenSave = listen('save', () => handleSave());
+    const unlistenSaveAs = listen('save_as', () => handleSaveAs());
+    const unlistenSearch = listen('search', () => searchInputRef.current?.focus());
+
     return () => {
       unlistenTheme.then(f => f());
       unlistenLang.then(f => f());
+      unlistenImport.then(f => f());
+      unlistenBackup.then(f => f());
+      unlistenSave.then(f => f());
+      unlistenSaveAs.then(f => f());
+      unlistenSearch.then(f => f());
       window.removeEventListener('storage', handleStorage);
     };
-  }, []);
+  }, [data, filePath, backupEnabled]); // Add dependencies to keep handlers fresh in listeners
 
   const getModId = (mobName: string) => {
     if (vanillaMobs.has(mobName)) return 'minecraft';
@@ -130,6 +143,23 @@ export default function App() {
     return 'minecraft';
   };
 
+  const processImportedData = (loadedData: MobsData, path: string) => {
+    setData(loadedData);
+    setFilePath(path);
+    
+    // Initialize UI state
+    const initialUIState: any = {};
+    loadedData.mobs.forEach(mob => {
+      if (!initialUIState[mob.Name]) {
+        initialUIState[mob.Name] = {
+          multiverseControl: true, // Default to true as per common use case
+          selectedDimension: mob.WorldName
+        };
+      }
+    });
+    setMobUIState(initialUIState);
+  };
+
   const handleImport = async () => {
     try {
       console.log('Opening file dialog...');
@@ -140,26 +170,36 @@ export default function App() {
       if (selected && typeof selected === 'string') {
         console.log('Selected file:', selected);
         const loadedData = await invoke<MobsData>('load_mobs_data', { path: selected });
-        console.log('Loaded data count:', loadedData.mobs.length);
-        
-        setData(loadedData);
-        setFilePath(selected);
-        
-        // Initialize UI state
-        const initialUIState: any = {};
-        loadedData.mobs.forEach(mob => {
-          if (!initialUIState[mob.Name]) {
-            initialUIState[mob.Name] = {
-              multiverseControl: true, // Default to true as per common use case
-              selectedDimension: mob.WorldName
-            };
-          }
-        });
-        setMobUIState(initialUIState);
+        processImportedData(loadedData, selected);
       }
     } catch (error) {
       console.error('Failed to import file:', error);
       alert('Failed to import file: ' + error);
+    }
+  };
+
+  const handleImportBackup = async () => {
+    try {
+      let defaultPath = undefined;
+      if (filePath) {
+        const parent = filePath.includes('/') ? filePath.substring(0, filePath.lastIndexOf('/')) : null;
+        if (parent) {
+          defaultPath = `${parent}/backups`;
+        }
+      }
+      
+      const selected = await open({
+        multiple: false,
+        filters: [{ name: 'YAML', extensions: ['yml', 'yaml'] }],
+        defaultPath
+      });
+      if (selected && typeof selected === 'string') {
+        const loadedData = await invoke<MobsData>('load_mobs_data', { path: selected });
+        processImportedData(loadedData, selected);
+      }
+    } catch (error) {
+      console.error('Failed to import backup:', error);
+      alert('Failed to import backup: ' + error);
     }
   };
 
@@ -171,6 +211,24 @@ export default function App() {
     } catch (error) {
       console.error('Failed to save file:', error);
       alert('Failed to save file: ' + error);
+    }
+  };
+
+  const handleSaveAs = async () => {
+    if (!data) return;
+    try {
+      const selected = await save({
+        filters: [{ name: 'YAML', extensions: ['yml', 'yaml'] }],
+        defaultPath: 'mobsData.yml'
+      });
+      if (selected) {
+        await invoke('save_mobs_data', { path: selected, data, backup: backupEnabled });
+        setFilePath(selected);
+        alert('Saved successfully!');
+      }
+    } catch (error) {
+      console.error('Failed to save as:', error);
+      alert('Failed to save as: ' + error);
     }
   };
 
@@ -274,6 +332,7 @@ export default function App() {
             <aside className="app-sidebar">
               <div className="search-box">
                 <input 
+                  ref={searchInputRef}
                   type="text" 
                   placeholder={t.search} 
                   value={searchQuery}

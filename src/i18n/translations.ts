@@ -44,6 +44,9 @@ export const translations = {
     hideOthers: "ほかを隠す",
     showAll: "すべてを表示",
     quit: "{app}を終了",
+    fileMenu: "ファイル",
+    importBackup: "バックアップからインポート",
+    saveAs: "名前を付けて保存",
   },
   en: {
     // Main Window
@@ -90,6 +93,9 @@ export const translations = {
     hideOthers: "Hide Others",
     showAll: "Show All",
     quit: "Quit {app}",
+    fileMenu: "File",
+    importBackup: "Import from Backup",
+    saveAs: "Save As...",
   },
   zh: {
     // Main Window
@@ -136,6 +142,9 @@ export const translations = {
     hideOthers: "隐藏其他",
     showAll: "显示全部",
     quit: "退出 {app}",
+    fileMenu: "文件",
+    importBackup: "从备份导入",
+    saveAs: "另存为...",
   }
 };
 
