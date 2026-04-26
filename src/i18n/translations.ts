@@ -1,3 +1,5 @@
+import { APP_VERSION } from '../version';
+
 export const translations = {
   ja: {
     // Main Window
@@ -23,7 +25,7 @@ export const translations = {
     theEnd: "The End",
     // About Window
     disclaimer: "MinecraftはMicrosoftとMojangの登録商標です。\nMobsManagerはStellionixの商標です。\nこのアプリはGemini3の支援を受けて大渕凜が作成しました。Microsoft、Mojang、Stellionixのいずれとも関係ありません。",
-    version: "v0.1.0",
+    version: `v${APP_VERSION}`,
     authors: "作者: 大渕凜",
     copyright: "© 2026 RinonTECH & TECH☆TECH\nこのアプリはApache 2.0ライセンスで公開されています。",
     // Preferences Window
@@ -73,7 +75,7 @@ export const translations = {
     theEnd: "The End",
     // About Window
     disclaimer: "Minecraft is a registered trademark of Microsoft and Mojang.\nMobsManager is a trademark of Stellionix.\nThis app was created by Ofuchi Rin with the support of Gemini3. It is not affiliated with Microsoft, Mojang, or Stellionix.",
-    version: "v0.1.0",
+    version: `v${APP_VERSION}`,
     authors: "Author: Ofuchi Rin",
     copyright: "© 2026 RinonTECH & TECH☆TECH\nThis app is published under the Apache 2.0 license.",
     // Preferences Window
@@ -123,7 +125,7 @@ export const translations = {
     theEnd: "末地",
     // About Window
     disclaimer: "Minecraft是Microsoft和Mojang的注册商标。\nMobsManager是Stellionix的商标。\n这个应用由大渕凜在Gemini3的协助下创建，与Microsoft、Mojang或Stellionix没有任何关系。",
-    version: "v0.1.0",
+    version: `v${APP_VERSION}`,
     authors: "作者: 大渕凜",
     copyright: "© 2026 RinonTECH & TECH☆TECH\n这个应用遵循Apache 2.0许可证发布。",
     // Preferences Window
