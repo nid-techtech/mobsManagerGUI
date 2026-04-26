@@ -20,6 +20,9 @@ export const translations = {
     nether: "The Nether",
     theEnd: "The End",
     disclaimer: "このアプリはMicrosoft・Mojang、およびMobsManagerの開発元であるStellionixとは一切関係ありません。それぞれの商標は各権利者に帰属します。",
+    version: "v0.1.0",
+    authors: "作者: nid-techtech",
+    copyright: "© 2026 Stellionix / Mobs Manager GUI",
     // Settings
     appearance: "外観",
     theme: "テーマ",
@@ -61,6 +64,9 @@ export const translations = {
     nether: "The Nether",
     theEnd: "The End",
     disclaimer: "This app is not affiliated with Microsoft, Mojang, or Stellionix (developer of MobsManager). All trademarks belong to their respective owners.",
+    version: "v0.1.0",
+    authors: "Authors: nid-techtech",
+    copyright: "© 2026 Stellionix / Mobs Manager GUI",
     // Settings
     appearance: "Appearance",
     theme: "Theme",
@@ -102,6 +108,9 @@ export const translations = {
     nether: "下界",
     theEnd: "末地",
     disclaimer: "此应用与 Microsoft、Mojang 或 MobsManager 的开发商 Stellionix 无关。所有商标均属于其各自所有者。",
+    version: "v0.1.0",
+    authors: "作者: nid-techtech",
+    copyright: "© 2026 Stellionix / Mobs Manager GUI",
     // Settings
     appearance: "外观",
     theme: "主题",

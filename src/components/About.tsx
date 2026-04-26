@@ -24,11 +24,11 @@ const About: React.FC = () => {
           <img src="/favicon.svg" alt="App Icon" />
         </div>
         <h1 className="app-title">{t.appTitle}</h1>
-        <p className="app-version">v0.1.0</p>
+        <p className="app-version">{t.version}</p>
         
         <div className="credits">
-          <p className="copyright">© 2026 Stellionix / Mobs Manager GUI</p>
-          <p className="authors">Authors: nid-techtech</p>
+          <p className="copyright">{t.copyright}</p>
+          <p className="authors">{t.authors}</p>
         </div>
 
         <div className="disclaimer-box">
