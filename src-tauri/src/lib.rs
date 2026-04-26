@@ -193,7 +193,6 @@ pub fn run() {
               .inner_size(400.0, 370.0)
               .resizable(false)
               .always_on_top(true)
-              .title_bar_style(tauri::TitleBarStyle::Overlay)
               .build();
             }
           }
