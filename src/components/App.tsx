@@ -308,6 +308,15 @@ export default function App() {
         <h1 className="pixel-title">{t.appTitle}</h1>
         <div className="header-actions">
           <button type="button" className="action-btn" onClick={() => { console.log('Save clicked'); handleSave(); }} disabled={!data}>{t.saveFile}</button>
+          <div className="search-box">
+            <input 
+              ref={searchInputRef}
+              type="text" 
+              placeholder={t.search} 
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+            />
+          </div>
         </div>
       </header>
       
@@ -319,15 +328,6 @@ export default function App() {
         ) : (
           <>
             <aside className="app-sidebar">
-              <div className="search-box">
-                <input 
-                  ref={searchInputRef}
-                  type="text" 
-                  placeholder={t.search} 
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                />
-              </div>
               <div className="mod-tabs-container">
                 {mods.map(mod => (
                   <button 
@@ -599,7 +599,8 @@ export default function App() {
         }
 
         .search-box {
-          padding: 20px;
+          display: flex;
+          align-items: center;
           flex-shrink: 0;
         }
 
@@ -612,19 +613,21 @@ export default function App() {
         }
 
         .search-box input {
-          width: 100%;
-          padding: 10px 14px;
+          width: 200px;
+          padding: 8px 14px;
           border: 1px solid var(--border-color);
-          border-radius: 10px;
-          background: var(--bg-color);
+          border-radius: 8px;
+          background: var(--sidebar-bg);
           color: var(--text-color);
           outline: none;
-          transition: border-color 0.2s, box-shadow 0.2s;
+          font-size: 13px;
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .search-box input:focus {
           border-color: var(--accent-color);
-          box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.1);
+          width: 240px;
         }
 
         .mod-tab {
