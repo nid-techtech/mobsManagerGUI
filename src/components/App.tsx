@@ -420,7 +420,7 @@ export default function App() {
                             }))}
                           />
                         </td>
-                        <td className="sub-separator">
+                        <td className={`sub-separator ${mob.multiverseControl ? 'disabled-cell' : ''}`}>
                           <select 
                             disabled={mob.multiverseControl}
                             value={mob.selectedDimension}
@@ -448,7 +448,7 @@ export default function App() {
                             onChange={e => updateMobValue(mob.name, 'AllSpawn', e.target.checked, currentEntry.WorldName)}
                           />
                         </td>
-                        <td className="sub-separator">
+                        <td className={`sub-separator ${!currentEntry.AllSpawn ? 'disabled-cell' : ''}`}>
                           <input 
                             type="checkbox" 
                             disabled={!currentEntry.AllSpawn}
@@ -456,7 +456,7 @@ export default function App() {
                             onChange={e => updateMobValue(mob.name, 'NaturalSpawn', e.target.checked, currentEntry.WorldName)}
                           />
                         </td>
-                        <td>
+                        <td className={!currentEntry.AllSpawn ? 'disabled-cell' : ''}>
                           <input 
                             type="checkbox" 
                             disabled={!currentEntry.AllSpawn}
@@ -464,7 +464,7 @@ export default function App() {
                             onChange={e => updateMobValue(mob.name, 'CustomSpawn', e.target.checked, currentEntry.WorldName)}
                           />
                         </td>
-                        <td>
+                        <td className={!currentEntry.AllSpawn ? 'disabled-cell' : ''}>
                           <input 
                             type="checkbox" 
                             disabled={!currentEntry.AllSpawn}
@@ -472,7 +472,7 @@ export default function App() {
                             onChange={e => updateMobValue(mob.name, 'SpawnerSpawn', e.target.checked, currentEntry.WorldName)}
                           />
                         </td>
-                        <td>
+                        <td className={!currentEntry.AllSpawn ? 'disabled-cell' : ''}>
                           <input 
                             type="checkbox" 
                             disabled={!currentEntry.AllSpawn}
@@ -480,7 +480,7 @@ export default function App() {
                             onChange={e => updateMobValue(mob.name, 'EggSpawn', e.target.checked, currentEntry.WorldName)}
                           />
                         </td>
-                        <td>
+                        <td className={!currentEntry.AllSpawn ? 'disabled-cell' : ''}>
                           <input 
                             type="checkbox" 
                             disabled={!currentEntry.AllSpawn}
@@ -488,7 +488,7 @@ export default function App() {
                             onChange={e => updateMobValue(mob.name, 'BreedingSpawn', e.target.checked, currentEntry.WorldName)}
                           />
                         </td>
-                        <td>
+                        <td className={!currentEntry.AllSpawn ? 'disabled-cell' : ''}>
                           <input 
                             type="checkbox" 
                             disabled={!currentEntry.AllSpawn}
@@ -522,12 +522,16 @@ export default function App() {
           --glass-border: rgba(255, 255, 255, 0.3);
           --shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
           --sidebar-width: 260px;
+          --locked-bg: rgba(243, 244, 246, 0.8);
+          --zebra-bg: #f2f2f2;
         }
 
         [data-theme='dark'] {
           --glass-bg: rgba(30, 41, 59, 0.8);
           --glass-border: rgba(255, 255, 255, 0.1);
           --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+          --locked-bg: rgba(56, 56, 56, 0.8);
+          --zebra-bg: #26344b;
         }
 
         .app-container {
@@ -770,6 +774,16 @@ export default function App() {
           border-left-color: rgba(128, 128, 128, 0.08);
         }
 
+        .disabled-cell {
+          background-color: var(--locked-bg) !important;
+        }
+
+        .disabled-cell input,
+        .disabled-cell select {
+          opacity: 0.5;
+          cursor: not-allowed;
+        }
+
         .mob-name-cell {
           font-weight: 600;
           font-size: 14px;
@@ -785,8 +799,12 @@ export default function App() {
           color: var(--accent-color);
         }
 
+        .mobs-table tr:nth-child(even) td {
+          background-color: var(--zebra-bg);
+        }
+
         .mobs-table tr:hover td {
-          background-color: rgba(59, 130, 246, 0.03);
+          background-color: rgba(59, 130, 246, 0.05);
         }
 
         /* Checkbox styling */
