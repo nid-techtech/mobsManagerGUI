@@ -33,6 +33,7 @@ export const translations = {
     versionInfo: "バージョン情報",
     close: "閉じる",
     mobName: "Mob名",
+    settingsTitle: "環境設定",
   },
   en: {
     appTitle: "Mobs Manager Editor",
@@ -68,6 +69,7 @@ export const translations = {
     versionInfo: "Version Info",
     close: "Close",
     mobName: "Mob Name",
+    settingsTitle: "Preferences",
   },
   zh: {
     appTitle: "Mobs Manager Editor",
@@ -103,6 +105,7 @@ export const translations = {
     versionInfo: "版本信息",
     close: "关闭",
     mobName: "生物名称",
+    settingsTitle: "设置",
   }
 };
 

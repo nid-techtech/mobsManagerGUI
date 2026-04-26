@@ -44,7 +44,7 @@ const Settings: React.FC = () => {
   return (
     <div className="settings-container">
       <header className="settings-header">
-        <h1>{lang === 'ja' ? '環境設定' : lang === 'zh' ? '设置' : 'Preferences'}</h1>
+        <h1>{t.settingsTitle}</h1>
       </header>
       
       <main className="settings-content">
