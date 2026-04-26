@@ -307,18 +307,7 @@ export default function App() {
       <header className="app-header" data-tauri-drag-region>
         <h1 className="pixel-title">{t.appTitle}</h1>
         <div className="header-actions">
-          <button type="button" className="action-btn" onClick={() => { console.log('Import clicked'); handleImport(); }}>{t.importFile}</button>
           <button type="button" className="action-btn" onClick={() => { console.log('Save clicked'); handleSave(); }} disabled={!data}>{t.saveFile}</button>
-          <div className="backup-toggle">
-            <input 
-              type="checkbox" 
-              id="backup-check" 
-              checked={backupEnabled} 
-              onChange={e => setBackupEnabled(e.target.checked)} 
-            />
-            <label htmlFor="backup-check">{t.backupEnabled}</label>
-          </div>
-          <button type="button" className="action-btn" onClick={() => { console.log('Info clicked'); setShowAbout(true); }}>ℹ️</button>
         </div>
       </header>
       
