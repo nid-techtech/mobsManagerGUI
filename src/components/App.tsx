@@ -59,6 +59,17 @@ function IndeterminateCheckbox({
   );
 }
 
+function formatRichText(text: string) {
+  if (!text) return '';
+  const parts = text.split(/(`[^`]+`)/g);
+  return parts.map((part, i) => {
+    if (part.startsWith('`') && part.endsWith('`')) {
+      return <code key={i}>{part.slice(1, -1)}</code>;
+    }
+    return part;
+  });
+}
+
 export default function App() {
   const [vanillaMobs, setVanillaMobs] = useState<Set<string>>(new Set());
   const [multiWordMods, setMultiWordMods] = useState<string[]>([]);
@@ -358,7 +369,7 @@ export default function App() {
         {!data ? (
           <div className="welcome-screen">
             <button type="button" className="large-button" onClick={() => { console.log('Large Import clicked'); handleImport(); }}>{t.importFile}</button>
-            <p className="import-help">{t.importHelp}</p>
+            <p className="import-help">{formatRichText(t.importHelp)}</p>
           </div>
         ) : (
           <>
@@ -651,6 +662,21 @@ export default function App() {
           max-width: 80%;
           text-align: center;
           line-height: 1.6;
+        }
+
+        code {
+          font-family: var(--font-code);
+          background: rgba(0, 0, 0, 0.05);
+          padding: 2px 6px;
+          border-radius: 4px;
+          border: 1px solid rgba(0, 0, 0, 0.05);
+          font-size: 0.9em;
+          color: var(--accent-color);
+        }
+
+        [data-theme='dark'] code {
+          background: rgba(255, 255, 255, 0.1);
+          border-color: rgba(255, 255, 255, 0.1);
         }
 
         .app-sidebar {
