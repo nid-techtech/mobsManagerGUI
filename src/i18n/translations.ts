@@ -1,5 +1,6 @@
 export const translations = {
   ja: {
+    // Main Window
     appTitle: "Mobs Manager Editor",
     importFile: "mobsData.ymlをインポート",
     saveFile: "上書き保存",
@@ -19,11 +20,12 @@ export const translations = {
     ironGolem: "ゴーレム",
     nether: "The Nether",
     theEnd: "The End",
-    disclaimer: "このアプリはMicrosoft・Mojang、およびMobsManagerの開発元であるStellionixとは一切関係ありません。それぞれの商標は各権利者に帰属します。",
+    // About Window
+    disclaimer: "MinecraftはMicrosoftとMojangの登録商標です。\nMobsManagerはStellionixの商標です。\nこのアプリはGemini3の支援を受けて大渕凜が作成しました。Microsoft、Mojang、Stellionixのいずれとも関係ありません。",
     version: "v0.1.0",
-    authors: "作者: nid-techtech",
-    copyright: "© 2026 Stellionix / Mobs Manager GUI",
-    // Settings
+    authors: "作者: 大渕凜",
+    copyright: "© 2026 RinonTECH & TECH☆TECH\nこのアプリはApache 2.0ライセンスで公開されています。",
+    // Preferences Window
     appearance: "外観",
     theme: "テーマ",
     light: "ライト",
@@ -44,6 +46,7 @@ export const translations = {
     quit: "{app}を終了",
   },
   en: {
+    // Main Window
     appTitle: "Mobs Manager Editor",
     importFile: "Import mobsData.yml",
     saveFile: "Save Changes",
@@ -63,11 +66,12 @@ export const translations = {
     ironGolem: "Iron Golem",
     nether: "The Nether",
     theEnd: "The End",
-    disclaimer: "This app is not affiliated with Microsoft, Mojang, or Stellionix (developer of MobsManager). All trademarks belong to their respective owners.",
+    // About Window
+    disclaimer: "Minecraft is a registered trademark of Microsoft and Mojang.\nMobsManager is a trademark of Stellionix.\nThis app was created by Ofuchi Rin with the support of Gemini3. It is not affiliated with Microsoft, Mojang, or Stellionix.",
     version: "v0.1.0",
-    authors: "Authors: nid-techtech",
-    copyright: "© 2026 Stellionix / Mobs Manager GUI",
-    // Settings
+    authors: "Author: Ofuchi Rin",
+    copyright: "© 2026 RinonTECH & TECH☆TECH\nThis app is published under the Apache 2.0 license.",
+    // Preferences Window
     appearance: "Appearance",
     theme: "Theme",
     light: "Light",
@@ -88,6 +92,7 @@ export const translations = {
     quit: "Quit {app}",
   },
   zh: {
+    // Main Window
     appTitle: "Mobs Manager Editor",
     importFile: "导入 mobsData.yml",
     saveFile: "保存更改",
@@ -107,11 +112,12 @@ export const translations = {
     ironGolem: "铁傀儡",
     nether: "下界",
     theEnd: "末地",
-    disclaimer: "此应用与 Microsoft、Mojang 或 MobsManager 的开发商 Stellionix 无关。所有商标均属于其各自所有者。",
+    // About Window
+    disclaimer: "Minecraft是Microsoft和Mojang的注册商标。\nMobsManager是Stellionix的商标。\n这个应用由大渕凜在Gemini3的协助下创建，与Microsoft、Mojang或Stellionix没有任何关系。",
     version: "v0.1.0",
-    authors: "作者: nid-techtech",
-    copyright: "© 2026 Stellionix / Mobs Manager GUI",
-    // Settings
+    authors: "作者: 大渕凜",
+    copyright: "© 2026 RinonTECH & TECH☆TECH\n这个应用遵循Apache 2.0许可证发布。",
+    // Preferences Window
     appearance: "外观",
     theme: "主题",
     light: "浅色",

@@ -79,6 +79,7 @@ const About: React.FC = () => {
           font-size: 12px;
           opacity: 0.8;
           line-height: 1.6;
+          white-space: pre-wrap;
         }
 
         .disclaimer-box {
@@ -92,6 +93,7 @@ const About: React.FC = () => {
           text-align: left;
           max-width: 340px;
           opacity: 0.7;
+          white-space: pre-wrap;
         }
       `}</style>
     </div>
