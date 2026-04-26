@@ -28,6 +28,8 @@ interface AggregatedMob {
 }
 
 export default function App() {
+  const [vanillaMobs, setVanillaMobs] = useState<Set<string>>(new Set());
+  const [multiWordMods, setMultiWordMods] = useState<string[]>([]);
   const [data, setData] = useState<MobsData | null>(null);
   const [filePath, setFilePath] = useState<string | null>(null);
   const [lang, setLang] = useState<Language>('ja');
@@ -50,7 +52,45 @@ export default function App() {
     }
     const systemLang = navigator.language.startsWith('ja') ? 'ja' : 'en';
     setLang(systemLang);
+
+    // Load resource lists
+    const loadLists = async () => {
+      try {
+        const vanillaText = await invoke<string>('read_resource_file', { name: 'vanilla.md' });
+        const multiWordText = await invoke<string>('read_resource_file', { name: 'modsNameWithAboveTwoWords.md' });
+
+        const parseList = (text: string) => {
+          return text.split('\n')
+            .map(line => line.trim())
+            .filter(line => line.startsWith('- '))
+            .map(line => line.substring(2).trim());
+        };
+
+        setVanillaMobs(new Set(parseList(vanillaText)));
+        setMultiWordMods(parseList(multiWordText).sort((a, b) => b.length - a.length));
+      } catch (e) {
+        console.error('Failed to load resource lists:', e);
+      }
+    };
+    loadLists();
   }, []);
+
+  const getModId = (mobName: string) => {
+    if (vanillaMobs.has(mobName)) return 'minecraft';
+    if (mobName.includes(':')) return mobName.split(':')[0];
+    
+    // Check multi-word mods
+    for (const mod of multiWordMods) {
+      if (mobName.startsWith(mod)) {
+        if (mobName.length === mod.length || mobName[mod.length] === '_') {
+          return mod;
+        }
+      }
+    }
+
+    if (mobName.includes('_')) return mobName.split('_')[0];
+    return 'minecraft';
+  };
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
@@ -107,10 +147,7 @@ export default function App() {
     if (!data) return [];
     const modSet = new Set<string>();
     data.mobs.forEach(mob => {
-      let modId = 'minecraft';
-      if (mob.Name.includes(':')) modId = mob.Name.split(':')[0];
-      else if (mob.Name.includes('_')) modId = mob.Name.split('_')[0];
-      modSet.add(modId);
+      modSet.add(getModId(mob.Name));
     });
     return Array.from(modSet).sort((a, b) => {
       if (a === 'minecraft') return -1;
@@ -124,9 +161,7 @@ export default function App() {
     const mobGroups: { [name: string]: AggregatedMob } = {};
     
     data.mobs.forEach(mob => {
-      let modId = 'minecraft';
-      if (mob.Name.includes(':')) modId = mob.Name.split(':')[0];
-      else if (mob.Name.includes('_')) modId = mob.Name.split('_')[0];
+      const modId = getModId(mob.Name);
 
       if (modId !== selectedMod) return;
       if (searchQuery && !mob.Name.toLowerCase().includes(searchQuery.toLowerCase())) return;
