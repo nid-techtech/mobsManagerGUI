@@ -3,6 +3,7 @@ use std::fs;
 use std::path::Path;
 use chrono::Local;
 use tauri::Manager;
+use tauri::Emitter;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "PascalCase")]
@@ -136,15 +137,6 @@ fn create_app_menu<R: tauri::Runtime>(handle: &tauri::AppHandle<R>, lang: &str) 
     use tauri::menu::{Menu, Submenu, MenuItem, PredefinedMenuItem, AboutMetadata};
     
     let labels = get_menu_labels(lang);
-    
-    let about_meta = AboutMetadata {
-      name: Some("Mobs Manager Editor".to_string()),
-      version: Some(handle.package_info().version.to_string()),
-      copyright: Some("© 2026 Stellionix / Mobs Manager GUI".to_string()),
-      authors: Some(vec!["nid-techtech".to_string()]),
-      comments: Some("This app is not affiliated with Microsoft, Mojang, or Stellionix (developer of MobsManager).".to_string()),
-      ..Default::default()
-    };
     
     let settings_menu = MenuItem::with_id(handle, "settings", &labels.settings, true, Some("CmdOrCtrl+,"))?;
     let about_menu = MenuItem::with_id(handle, "about", &labels.about, true, None::<&str>)?;
