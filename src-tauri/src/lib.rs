@@ -123,9 +123,10 @@ fn create_app_menu<R: tauri::Runtime>(handle: &tauri::AppHandle<R>, lang: &str) 
     };
     
     let settings_menu = MenuItem::with_id(handle, "settings", &labels.settings, true, Some("CmdOrCtrl+,"))?;
+    let about_menu = MenuItem::with_id(handle, "about", &labels.about, true, None::<&str>)?;
     
     let app_menu = Submenu::with_id(handle, "app", "App", true)?;
-    app_menu.append(&PredefinedMenuItem::about(handle, Some(&labels.about), Some(about_meta))?)?;
+    app_menu.append(&about_menu)?;
     app_menu.append(&settings_menu)?;
     app_menu.append(&PredefinedMenuItem::separator(handle)?)?;
     app_menu.append(&PredefinedMenuItem::services(handle, Some(&labels.services))?)?;
@@ -157,14 +158,14 @@ pub fn run() {
       #[cfg(target_os = "macos")]
       {
         let handle = app.handle();
-        // 初期言語の判定（とりあえずOSの言語設定から。本当は保存された設定を読みたいが、
-        // フロントエンド側で起動時にupdate_menuを呼ぶ形にするのが楽）
+        // 初期言語の判定
         let lang = "ja"; // デフォルト
         let menu = create_app_menu(handle, lang)?;
         app.set_menu(menu)?;
 
         app.on_menu_event(move |app, event| {
-          if event.id() == "settings" {
+          let id = event.id().as_ref();
+          if id == "settings" {
             if let Some(window) = app.get_webview_window("settings") {
               let _ = window.set_focus();
             } else {
@@ -175,6 +176,21 @@ pub fn run() {
               )
               .title("環境設定")
               .inner_size(400.0, 450.0)
+              .resizable(false)
+              .always_on_top(true)
+              .build();
+            }
+          } else if id == "about" {
+            if let Some(window) = app.get_webview_window("about") {
+              let _ = window.set_focus();
+            } else {
+              let _ = tauri::WebviewWindowBuilder::new(
+                app,
+                "about",
+                tauri::WebviewUrl::App("about".into())
+              )
+              .title("このアプリについて")
+              .inner_size(400.0, 320.0)
               .resizable(false)
               .always_on_top(true)
               .build();
