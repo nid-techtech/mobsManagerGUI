@@ -1,29 +1,28 @@
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
 use std::fs;
 use std::path::Path;
 use chrono::Local;
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
 #[serde(rename_all = "PascalCase")]
-pub struct SpawnSettings {
+pub struct MobEntry {
+    #[serde(rename = "==")]
+    pub class_name: String,
+    pub name: String,
+    pub world_name: String,
     pub all_spawn: bool,
-    pub natural: bool,
-    pub custom: bool,
-    pub spawner: bool,
-    pub egg: bool,
-    pub breeding: bool,
-    pub iron_golem: bool,
+    pub natural_spawn: bool,
+    pub custom_spawn: bool,
+    pub spawner_spawn: bool,
+    pub egg_spawn: bool,
+    pub breeding_spawn: bool,
+    pub iron_golem_spawn: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-#[serde(rename_all = "PascalCase")]
-pub struct MobConfig {
-    pub multiverse_control: bool,
-    pub world_name: HashMap<String, SpawnSettings>,
+pub struct MobsData {
+    pub mobs: Vec<MobEntry>,
 }
-
-pub type MobsData = HashMap<String, MobConfig>;
 
 #[tauri::command]
 fn load_mobs_data(path: String) -> Result<MobsData, String> {
