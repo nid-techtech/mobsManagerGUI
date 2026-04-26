@@ -34,6 +34,11 @@ export const translations = {
     close: "閉じる",
     mobName: "Mob名",
     settingsTitle: "環境設定",
+    services: "サービス",
+    hide: "{app}を隠す",
+    hideOthers: "ほかを隠す",
+    showAll: "すべてを表示",
+    quit: "{app}を終了",
   },
   en: {
     appTitle: "Mobs Manager Editor",
@@ -70,6 +75,11 @@ export const translations = {
     close: "Close",
     mobName: "Mob Name",
     settingsTitle: "Preferences",
+    services: "Services",
+    hide: "Hide {app}",
+    hideOthers: "Hide Others",
+    showAll: "Show All",
+    quit: "Quit {app}",
   },
   zh: {
     appTitle: "Mobs Manager Editor",
@@ -106,6 +116,11 @@ export const translations = {
     close: "关闭",
     mobName: "生物名称",
     settingsTitle: "设置",
+    services: "服务",
+    hide: "隐藏 {app}",
+    hideOthers: "隐藏其他",
+    showAll: "显示全部",
+    quit: "退出 {app}",
   }
 };
 

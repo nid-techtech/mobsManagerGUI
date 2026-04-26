@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { emit } from '@tauri-apps/api/event';
+import { invoke } from '@tauri-apps/api/core';
 import { translations, type Language } from '../i18n/translations';
 
 const Settings: React.FC = () => {
@@ -17,13 +18,15 @@ const Settings: React.FC = () => {
     }
 
     const savedLang = localStorage.getItem('lang') as Language | null;
+    let initialLang: Language = 'ja';
     if (savedLang) {
-      setLang(savedLang);
+      initialLang = savedLang;
     } else {
-      const systemLang = navigator.language.startsWith('ja') ? 'ja' : 
-                         navigator.language.startsWith('zh') ? 'zh' : 'en';
-      setLang(systemLang);
+      initialLang = navigator.language.startsWith('ja') ? 'ja' : 
+                    navigator.language.startsWith('zh') ? 'zh' : 'en';
     }
+    setLang(initialLang);
+    invoke('update_menu', { lang: initialLang });
   }, []);
 
   const t = translations[lang];
@@ -38,6 +41,7 @@ const Settings: React.FC = () => {
   const updateLang = (newLang: Language) => {
     setLang(newLang);
     localStorage.setItem('lang', newLang);
+    invoke('update_menu', { lang: newLang });
     emit('lang-changed', newLang);
   };
 

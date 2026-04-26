@@ -65,42 +65,102 @@ fn get_mod_lists() -> (String, String) {
     (vanilla.to_string(), multi_word.to_string())
 }
 
+struct MenuLabels {
+    about: String,
+    settings: String,
+    services: String,
+    hide: String,
+    hide_others: String,
+    show_all: String,
+    quit: String,
+}
+
+fn get_menu_labels(lang: &str) -> MenuLabels {
+    let app_name = "Mobs Manager Editor";
+    match lang {
+        "ja" => MenuLabels {
+            about: format!("{}について", app_name),
+            settings: "環境設定".to_string(),
+            services: "サービス".to_string(),
+            hide: format!("{}を隠す", app_name),
+            hide_others: "ほかを隠す".to_string(),
+            show_all: "すべてを表示".to_string(),
+            quit: format!("{}を終了", app_name),
+        },
+        "zh" => MenuLabels {
+            about: format!("关于 {}", app_name),
+            settings: "设置".to_string(),
+            services: "服务".to_string(),
+            hide: format!("隐藏 {}", app_name),
+            hide_others: "隐藏其他".to_string(),
+            show_all: "显示全部".to_string(),
+            quit: format!("退出 {}", app_name),
+        },
+        _ => MenuLabels {
+            about: format!("About {}", app_name),
+            settings: "Preferences".to_string(),
+            services: "Services".to_string(),
+            hide: format!("Hide {}", app_name),
+            hide_others: "Hide Others".to_string(),
+            show_all: "Show All".to_string(),
+            quit: format!("Quit {}", app_name),
+        }
+    }
+}
+
+fn create_app_menu<R: tauri::Runtime>(handle: &tauri::AppHandle<R>, lang: &str) -> tauri::Result<tauri::menu::Menu<R>> {
+    use tauri::menu::{Menu, Submenu, MenuItem, PredefinedMenuItem, AboutMetadata};
+    
+    let labels = get_menu_labels(lang);
+    
+    let about_meta = AboutMetadata {
+      name: Some("Mobs Manager Editor".to_string()),
+      version: Some(handle.package_info().version.to_string()),
+      copyright: Some("© 2026 Stellionix / Mobs Manager GUI".to_string()),
+      authors: Some(vec!["nid-techtech".to_string()]),
+      comments: Some("This app is not affiliated with Microsoft, Mojang, or Stellionix (developer of MobsManager).".to_string()),
+      ..Default::default()
+    };
+    
+    let settings_menu = MenuItem::with_id(handle, "settings", &labels.settings, true, Some("CmdOrCtrl+,"))?;
+    
+    let app_menu = Submenu::with_id(handle, "app", "App", true)?;
+    app_menu.append(&PredefinedMenuItem::about(handle, Some(&labels.about), Some(about_meta))?)?;
+    app_menu.append(&settings_menu)?;
+    app_menu.append(&PredefinedMenuItem::separator(handle)?)?;
+    app_menu.append(&PredefinedMenuItem::services(handle, Some(&labels.services))?)?;
+    app_menu.append(&PredefinedMenuItem::separator(handle)?)?;
+    app_menu.append(&PredefinedMenuItem::hide(handle, Some(&labels.hide))?)?;
+    app_menu.append(&PredefinedMenuItem::hide_others(handle, Some(&labels.hide_others))?)?;
+    app_menu.append(&PredefinedMenuItem::show_all(handle, Some(&labels.show_all))?)?;
+    app_menu.append(&PredefinedMenuItem::separator(handle)?)?;
+    app_menu.append(&PredefinedMenuItem::quit(handle, Some(&labels.quit))?)?;
+
+    Menu::with_items(handle, &[&app_menu])
+}
+
+#[tauri::command]
+fn update_menu(handle: tauri::AppHandle, lang: String) -> Result<(), String> {
+    let menu = create_app_menu(&handle, &lang).map_err(|e| e.to_string())?;
+    handle.set_menu(menu).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
   tauri::Builder::default()
     .plugin(tauri_plugin_fs::init())
     .plugin(tauri_plugin_dialog::init())
     .plugin(tauri_plugin_shell::init())
-    .invoke_handler(tauri::generate_handler![load_mobs_data, save_mobs_data, get_mod_lists])
+    .invoke_handler(tauri::generate_handler![load_mobs_data, save_mobs_data, get_mod_lists, update_menu])
     .setup(|app| {
       #[cfg(target_os = "macos")]
       {
-        use tauri::menu::{Menu, Submenu, MenuItem, PredefinedMenuItem, AboutMetadata};
         let handle = app.handle();
-        let about_meta = AboutMetadata {
-          name: Some("Mobs Manager Editor".to_string()),
-          version: Some(handle.package_info().version.to_string()),
-          copyright: Some("© 2026 Stellionix / Mobs Manager GUI".to_string()),
-          authors: Some(vec!["nid-techtech".to_string()]),
-          comments: Some("This app is not affiliated with Microsoft, Mojang, or Stellionix (developer of MobsManager).".to_string()),
-          ..Default::default()
-        };
-        
-        let settings_menu = MenuItem::with_id(handle, "settings", "環境設定", true, Some("CmdOrCtrl+,"))?;
-        
-        let app_menu = Submenu::with_id(handle, "app", "App", true)?;
-        app_menu.append(&PredefinedMenuItem::about(handle, None, Some(about_meta))?)?;
-        app_menu.append(&settings_menu)?;
-        app_menu.append(&PredefinedMenuItem::separator(handle)?)?;
-        app_menu.append(&PredefinedMenuItem::services(handle, None)?)?;
-        app_menu.append(&PredefinedMenuItem::separator(handle)?)?;
-        app_menu.append(&PredefinedMenuItem::hide(handle, None)?)?;
-        app_menu.append(&PredefinedMenuItem::hide_others(handle, None)?)?;
-        app_menu.append(&PredefinedMenuItem::show_all(handle, None)?)?;
-        app_menu.append(&PredefinedMenuItem::separator(handle)?)?;
-        app_menu.append(&PredefinedMenuItem::quit(handle, None)?)?;
-
-        let menu = Menu::with_items(handle, &[&app_menu])?;
+        // 初期言語の判定（とりあえずOSの言語設定から。本当は保存された設定を読みたいが、
+        // フロントエンド側で起動時にupdate_menuを呼ぶ形にするのが楽）
+        let lang = "ja"; // デフォルト
+        let menu = create_app_menu(handle, lang)?;
         app.set_menu(menu)?;
 
         app.on_menu_event(move |app, event| {
