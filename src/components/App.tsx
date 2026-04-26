@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { open } from '@tauri-apps/plugin-dialog';
+import { listen } from '@tauri-apps/api/event';
 import { translations, type Language } from '../i18n/translations';
 
 interface MobEntry {
@@ -45,13 +46,32 @@ export default function App() {
   const t = translations[lang];
 
   useEffect(() => {
+    // Load initial settings
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark';
     if (savedTheme) {
       setTheme(savedTheme);
       document.documentElement.setAttribute('data-theme', savedTheme);
     }
-    const systemLang = navigator.language.startsWith('ja') ? 'ja' : 'en';
-    setLang(systemLang);
+    
+    const savedLang = localStorage.getItem('lang') as Language;
+    if (savedLang) {
+      setLang(savedLang);
+    } else {
+      const systemLang = navigator.language.startsWith('ja') ? 'ja' : 
+                         navigator.language.startsWith('zh') ? 'zh' : 'en';
+      setLang(systemLang);
+    }
+
+    // Listen for setting changes from other windows
+    const unlistenTheme = listen<string>('theme-changed', (event) => {
+      const newTheme = event.payload as 'light' | 'dark';
+      setTheme(newTheme);
+      document.documentElement.setAttribute('data-theme', newTheme);
+    });
+
+    const unlistenLang = listen<string>('lang-changed', (event) => {
+      setLang(event.payload as Language);
+    });
 
     // Load resource lists
     const loadLists = async () => {
@@ -72,6 +92,11 @@ export default function App() {
       }
     };
     loadLists();
+
+    return () => {
+      unlistenTheme.then(f => f());
+      unlistenLang.then(f => f());
+    };
   }, []);
 
   const getModId = (mobName: string) => {
@@ -89,13 +114,6 @@ export default function App() {
 
     if (mobName.includes('_')) return mobName.split('_')[0];
     return 'minecraft';
-  };
-
-  const toggleTheme = () => {
-    const newTheme = theme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-    document.documentElement.setAttribute('data-theme', newTheme);
-    localStorage.setItem('theme', newTheme);
   };
 
   const handleImport = async () => {
@@ -228,12 +246,6 @@ export default function App() {
             />
             <label htmlFor="backup-check">{t.backupEnabled}</label>
           </div>
-          <button type="button" className="action-btn" onClick={() => { console.log('Lang clicked'); setLang(lang === 'ja' ? 'en' : 'ja'); }}>
-            {lang === 'ja' ? 'English' : '日本語'}
-          </button>
-          <button type="button" className="action-btn" onClick={() => { console.log('Theme clicked'); toggleTheme(); }}>
-            {theme === 'light' ? '🌙' : '☀️'}
-          </button>
           <button type="button" className="action-btn" onClick={() => { console.log('Info clicked'); setShowAbout(true); }}>ℹ️</button>
         </div>
       </header>
@@ -270,7 +282,7 @@ export default function App() {
               <table className="mobs-table">
                 <thead>
                   <tr>
-                    <th>Mob Name</th>
+                    <th>{t.mobName}</th>
                     <th>{t.multiverseControl}</th>
                     <th>{t.dimensions}</th>
                     <th>{t.allSpawn}</th>

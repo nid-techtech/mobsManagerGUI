@@ -1,61 +1,96 @@
 import React, { useState, useEffect } from 'react';
+import { emit } from '@tauri-apps/api/event';
+import { translations, type Language } from '../i18n/translations';
 
 const Settings: React.FC = () => {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [lang, setLang] = useState<Language>('ja');
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
     if (savedTheme) {
       setTheme(savedTheme);
+      document.documentElement.setAttribute('data-theme', savedTheme);
     } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
       setTheme('dark');
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+
+    const savedLang = localStorage.getItem('lang') as Language | null;
+    if (savedLang) {
+      setLang(savedLang);
+    } else {
+      const systemLang = navigator.language.startsWith('ja') ? 'ja' : 
+                         navigator.language.startsWith('zh') ? 'zh' : 'en';
+      setLang(systemLang);
     }
   }, []);
 
-  const toggleTheme = (newTheme: 'light' | 'dark') => {
+  const t = translations[lang];
+
+  const updateTheme = (newTheme: 'light' | 'dark') => {
     setTheme(newTheme);
     localStorage.setItem('theme', newTheme);
     document.documentElement.setAttribute('data-theme', newTheme);
+    emit('theme-changed', newTheme);
+  };
+
+  const updateLang = (newLang: Language) => {
+    setLang(newLang);
+    localStorage.setItem('lang', newLang);
+    emit('lang-changed', newLang);
   };
 
   return (
     <div className="settings-container">
       <header className="settings-header">
-        <h1>環境設定</h1>
+        <h1>{lang === 'ja' ? '環境設定' : lang === 'zh' ? '设置' : 'Preferences'}</h1>
       </header>
       
       <main className="settings-content">
         <section className="settings-section">
-          <h2>外観</h2>
+          <h2>{t.appearance}</h2>
           <div className="setting-item">
-            <span className="setting-label">テーマ</span>
+            <span className="setting-label">{t.theme}</span>
             <div className="theme-toggle">
               <button 
                 className={`theme-btn ${theme === 'light' ? 'active' : ''}`}
-                onClick={() => toggleTheme('light')}
+                onClick={() => updateTheme('light')}
               >
-                ライト
+                {t.light}
               </button>
               <button 
                 className={`theme-btn ${theme === 'dark' ? 'active' : ''}`}
-                onClick={() => toggleTheme('dark')}
+                onClick={() => updateTheme('dark')}
               >
-                ダーク
+                {t.dark}
               </button>
             </div>
+          </div>
+          <div className="setting-item">
+            <span className="setting-label">{t.language}</span>
+            <select 
+              className="lang-select"
+              value={lang}
+              onChange={(e) => updateLang(e.target.value as Language)}
+            >
+              <option value="ja">{t.japanese}</option>
+              <option value="en">{t.english}</option>
+              <option value="zh">{t.chinese}</option>
+            </select>
           </div>
         </section>
 
         <section className="settings-section">
-          <h2>バックアップ</h2>
+          <h2>{t.backup}</h2>
           <div className="setting-item">
-            <span className="setting-label">自動バックアップを有効にする</span>
+            <span className="setting-label">{t.backupEnabled}</span>
             <input type="checkbox" defaultChecked />
           </div>
         </section>
 
         <section className="settings-section">
-          <h2>バージョン情報</h2>
+          <h2>{t.versionInfo}</h2>
           <div className="setting-item">
             <span className="setting-label">Mobs Manager Editor</span>
             <span className="setting-value">v0.1.0</span>
@@ -70,6 +105,7 @@ const Settings: React.FC = () => {
           flex-direction: column;
           gap: 20px;
           user-select: none;
+          color: var(--text-color);
         }
 
         .settings-header h1 {
@@ -125,6 +161,17 @@ const Settings: React.FC = () => {
         .theme-btn.active {
           background: var(--accent-color);
           color: white;
+        }
+
+        .lang-select {
+          padding: 4px 8px;
+          border-radius: 6px;
+          border: 1px solid var(--border-color);
+          background: var(--sidebar-bg);
+          color: var(--text-color);
+          font-size: 13px;
+          outline: none;
+          cursor: pointer;
         }
 
         .setting-value {
