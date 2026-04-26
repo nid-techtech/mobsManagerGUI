@@ -3,6 +3,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { open, save } from '@tauri-apps/plugin-dialog';
 import { listen } from '@tauri-apps/api/event';
 import { translations, type Language } from '../i18n/translations';
+import { APP_VERSION } from '../version';
 
 interface MobEntry {
   '==': string;
@@ -350,7 +351,10 @@ export default function App() {
   return (
     <div className="app-container">
       <header className="app-header" data-tauri-drag-region>
-        <h1 className="pixel-title">{t.appTitle}</h1>
+        <h1 className="pixel-title">
+          {t.appTitle}
+          <span className="title-version">v{APP_VERSION}</span>
+        </h1>
         <div className="header-actions">
           <button type="button" className="action-btn" onClick={() => { console.log('Save clicked'); handleSave(); }} disabled={!data}>{t.saveFile}</button>
           <div className="search-box">
@@ -574,6 +578,17 @@ export default function App() {
           -webkit-text-fill-color: transparent;
           margin: 0;
           letter-spacing: 1px;
+          display: flex;
+          align-items: baseline;
+          gap: 12px;
+        }
+
+        .title-version {
+          font-family: var(--font-main);
+          font-size: 14px;
+          -webkit-text-fill-color: var(--text-color);
+          opacity: 0.4;
+          font-weight: 500;
         }
 
         .header-actions {
