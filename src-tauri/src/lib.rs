@@ -178,7 +178,7 @@ pub fn run() {
               .inner_size(400.0, 380.0)
               .resizable(false)
               .always_on_top(true)
-              .title_bar_style(tauri::TitleBarStyle::Hidden)
+              .title_bar_style(tauri::TitleBarStyle::Overlay)
               .build();
             }
           } else if id == "about" {
