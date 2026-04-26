@@ -47,7 +47,7 @@ const Settings: React.FC = () => {
 
   return (
     <div className="settings-container">
-      <header className="settings-header">
+      <header className="settings-header" data-tauri-drag-region>
         <h1>{t.settingsTitle}</h1>
       </header>
       
@@ -104,6 +104,11 @@ const Settings: React.FC = () => {
           gap: 20px;
           user-select: none;
           color: var(--text-color);
+        }
+
+        .settings-header {
+          padding-left: 70px;
+          padding-top: 8px;
         }
 
         .settings-header h1 {

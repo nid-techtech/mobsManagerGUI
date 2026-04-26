@@ -246,7 +246,7 @@ export default function App() {
 
   return (
     <div className="app-container">
-      <header className="app-header">
+      <header className="app-header" data-tauri-drag-region>
         <h1 className="pixel-title">{t.appTitle}</h1>
         <div className="header-actions">
           <button type="button" className="action-btn" onClick={() => { console.log('Import clicked'); handleImport(); }}>{t.importFile}</button>
@@ -444,7 +444,7 @@ export default function App() {
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 10px 30px;
+          padding: 10px 30px 10px 80px;
           background: var(--glass-bg);
           backdrop-filter: blur(12px);
           border-bottom: 1px solid var(--glass-border);

@@ -72,7 +72,7 @@ const About: React.FC = () => {
   };
 
   return (
-    <div className="about-container">
+    <div className="about-container" data-tauri-drag-region>
       <div className="about-content">
         <h1 className="app-title">{t.appTitle}</h1>
         <p className="app-version">{t.version}</p>
