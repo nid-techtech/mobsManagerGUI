@@ -67,7 +67,7 @@ pub fn run() {
     .setup(|app| {
       #[cfg(target_os = "macos")]
       {
-        use tauri::menu::{Menu, Submenu, MenuItem, PredefinedMenuItem, AboutMetadata};
+        use tauri::menu::{Menu, Submenu, PredefinedMenuItem, AboutMetadata};
         let handle = app.handle();
         let about_meta = AboutMetadata {
           name: Some("Mobs Manager Editor".to_string()),
@@ -81,7 +81,7 @@ pub fn run() {
         let app_menu = Submenu::with_id(handle, "app", "App", true)?;
         app_menu.append(&PredefinedMenuItem::about(handle, None, Some(about_meta))?)?;
         app_menu.append(&PredefinedMenuItem::separator(handle)?)?;
-        app_menu.append(&PredefinedMenuItem::services(handle)?)?;
+        app_menu.append(&PredefinedMenuItem::services(handle, None)?)?;
         app_menu.append(&PredefinedMenuItem::separator(handle)?)?;
         app_menu.append(&PredefinedMenuItem::hide(handle, None)?)?;
         app_menu.append(&PredefinedMenuItem::hide_others(handle, None)?)?;
