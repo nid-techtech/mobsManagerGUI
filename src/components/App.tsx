@@ -667,11 +667,12 @@ export default function App() {
         code {
           font-family: var(--font-code);
           background: rgba(0, 0, 0, 0.05);
-          padding: 2px 6px;
+          padding: 0 4px;
           border-radius: 4px;
           border: 1px solid rgba(0, 0, 0, 0.05);
-          font-size: 0.9em;
+          font-size: 0.82em;
           color: var(--accent-color);
+          vertical-align: baseline;
         }
 
         [data-theme='dark'] code {
