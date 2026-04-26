@@ -23,6 +23,7 @@ interface MobsData {
 
 interface AggregatedMob {
   name: string;
+  modId: string;
   multiverseControl: boolean;
   selectedDimension: string;
   worlds: string[];
@@ -252,12 +253,15 @@ export default function App() {
     data.mobs.forEach(mob => {
       const modId = getModId(mob.Name);
 
-      if (modId !== selectedMod) return;
+      // If no search query, filter by selected mod
+      if (!searchQuery && modId !== selectedMod) return;
+      // If there is a search query, filter by name across all mods
       if (searchQuery && !mob.Name.toLowerCase().includes(searchQuery.toLowerCase())) return;
 
       if (!mobGroups[mob.Name]) {
         mobGroups[mob.Name] = {
           name: mob.Name,
+          modId,
           multiverseControl: mobUIState[mob.Name]?.multiverseControl ?? true,
           selectedDimension: mobUIState[mob.Name]?.selectedDimension ?? mob.WorldName,
           worlds: []
@@ -366,7 +370,14 @@ export default function App() {
 
                     return (
                       <tr key={mob.name}>
-                        <td className="mob-name-cell">{mob.name}</td>
+                        <td className="mob-name-cell">
+                          {mob.name}
+                          {searchQuery && (
+                            <span className="mod-label-hint">
+                              by [{mob.modId === 'minecraft' ? t.vanilla : mob.modId}]
+                            </span>
+                          )}
+                        </td>
                         <td>
                           <input 
                             type="checkbox" 
@@ -695,6 +706,16 @@ export default function App() {
         .mob-name-cell {
           font-weight: 600;
           font-size: 14px;
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+        }
+
+        .mod-label-hint {
+          font-size: 11px;
+          font-weight: 400;
+          opacity: 0.6;
+          color: var(--accent-color);
         }
 
         .mobs-table tr:hover td {
