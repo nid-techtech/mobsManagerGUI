@@ -9,7 +9,6 @@
     "core:default",
     "dialog:default",
     "fs:default",
-    "shell:default",
-    "app:default"
+    "shell:default"
   ]
 }

@@ -56,8 +56,7 @@ export default function App() {
     // Load resource lists
     const loadLists = async () => {
       try {
-        const vanillaText = await invoke<string>('read_resource_file', { name: 'vanilla.md' });
-        const multiWordText = await invoke<string>('read_resource_file', { name: 'modsNameWithAboveTwoWords.md' });
+        const [vanillaText, multiWordText] = await invoke<[string, string]>('get_mod_lists');
 
         const parseList = (text: string) => {
           return text.split('\n')

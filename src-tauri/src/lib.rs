@@ -58,9 +58,10 @@ fn save_mobs_data(path: String, data: MobsData, backup: bool) -> Result<(), Stri
 }
 
 #[tauri::command]
-fn read_resource_file(name: String) -> Result<String, String> {
-    let path = Path::new("resources").join("modsList").join(name);
-    fs::read_to_string(path).map_err(|e| e.to_string())
+fn get_mod_lists() -> (String, String) {
+    let vanilla = include_str!("../../resources/modsList/vanilla.md");
+    let multi_word = include_str!("../../resources/modsList/modsNameWithAboveTwoWords.md");
+    (vanilla.to_string(), multi_word.to_string())
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
@@ -69,7 +70,7 @@ pub fn run() {
     .plugin(tauri_plugin_fs::init())
     .plugin(tauri_plugin_dialog::init())
     .plugin(tauri_plugin_shell::init())
-    .invoke_handler(tauri::generate_handler![load_mobs_data, save_mobs_data, read_resource_file])
+    .invoke_handler(tauri::generate_handler![load_mobs_data, save_mobs_data, get_mod_lists])
     .setup(|app| {
       #[cfg(target_os = "macos")]
       {
