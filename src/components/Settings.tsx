@@ -93,13 +93,7 @@ const Settings: React.FC = () => {
           </div>
         </section>
 
-        <section className="settings-section">
-          <h2>{t.versionInfo}</h2>
-          <div className="setting-item">
-            <span className="setting-label">Mobs Manager Editor</span>
-            <span className="setting-value">v0.1.0</span>
-          </div>
-        </section>
+
       </main>
 
       <style>{`
@@ -178,10 +172,7 @@ const Settings: React.FC = () => {
           cursor: pointer;
         }
 
-        .setting-value {
-          font-size: 12px;
-          opacity: 0.8;
-        }
+
 
         input[type="checkbox"] {
           width: 18px;

@@ -175,7 +175,7 @@ pub fn run() {
                 tauri::WebviewUrl::App("settings".into())
               )
               .title("環境設定")
-              .inner_size(400.0, 450.0)
+              .inner_size(400.0, 380.0)
               .resizable(false)
               .always_on_top(true)
               .build();
