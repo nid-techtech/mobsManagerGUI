@@ -29,6 +29,36 @@ interface AggregatedMob {
   worlds: string[];
 }
 
+function IndeterminateCheckbox({ 
+  checked, 
+  indeterminate, 
+  onChange,
+  disabled
+}: { 
+  checked: boolean, 
+  indeterminate: boolean, 
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+  disabled?: boolean
+}) {
+  const ref = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.indeterminate = indeterminate;
+    }
+  }, [indeterminate]);
+
+  return (
+    <input 
+      type="checkbox" 
+      ref={ref}
+      checked={checked}
+      onChange={onChange}
+      disabled={disabled}
+    />
+  );
+}
+
 export default function App() {
   const [vanillaMobs, setVanillaMobs] = useState<Set<string>>(new Set());
   const [multiWordMods, setMultiWordMods] = useState<string[]>([]);
@@ -283,14 +313,14 @@ export default function App() {
       if (mob.Name === mobName) {
         if (isControl || mob.WorldName === worldName) {
           const updatedMob = { ...mob, [field]: value };
-          // If AllSpawn is set to false, reset other spawn reasons
-          if (field === 'AllSpawn' && value === false) {
-            updatedMob.NaturalSpawn = false;
-            updatedMob.CustomSpawn = false;
-            updatedMob.SpawnerSpawn = false;
-            updatedMob.EggSpawn = false;
-            updatedMob.BreedingSpawn = false;
-            updatedMob.IronGolemSpawn = false;
+          // If AllSpawn is toggled, update all other spawn reasons
+          if (field === 'AllSpawn') {
+            updatedMob.NaturalSpawn = value;
+            updatedMob.CustomSpawn = value;
+            updatedMob.SpawnerSpawn = value;
+            updatedMob.EggSpawn = value;
+            updatedMob.BreedingSpawn = value;
+            updatedMob.IronGolemSpawn = value;
           }
           return updatedMob;
         }
@@ -405,9 +435,16 @@ export default function App() {
                           </select>
                         </td>
                         <td className="group-separator">
-                          <input 
-                            type="checkbox" 
+                          <IndeterminateCheckbox 
                             checked={currentEntry.AllSpawn}
+                            indeterminate={currentEntry.AllSpawn && !(
+                              currentEntry.NaturalSpawn &&
+                              currentEntry.CustomSpawn &&
+                              currentEntry.SpawnerSpawn &&
+                              currentEntry.EggSpawn &&
+                              currentEntry.BreedingSpawn &&
+                              currentEntry.IronGolemSpawn
+                            )}
                             onChange={e => updateMobValue(mob.name, 'AllSpawn', e.target.checked, currentEntry.WorldName)}
                           />
                         </td>
