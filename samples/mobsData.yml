@@ -1,0 +1,60 @@
+ZOMBIE:
+  MultiverseControl: true
+  WorldName:
+    world:
+      AllSpawn: true
+      Natural: true
+      Custom: true
+      Spawner: true
+      Egg: true
+      Breeding: false
+      IronGolem: false
+    DIM-1:
+      AllSpawn: true
+      Natural: true
+      Custom: true
+      Spawner: true
+      Egg: true
+      Breeding: false
+      IronGolem: false
+CREEPER:
+  MultiverseControl: false
+  WorldName:
+    world:
+      AllSpawn: true
+      Natural: true
+      Custom: false
+      Spawner: true
+      Egg: true
+      Breeding: false
+      IronGolem: false
+    DIM1:
+      AllSpawn: false
+      Natural: false
+      Custom: false
+      Spawner: false
+      Egg: false
+      Breeding: false
+      IronGolem: false
+"minecraft:enderman":
+  MultiverseControl: true
+  WorldName:
+    world:
+      AllSpawn: true
+      Natural: true
+      Custom: true
+      Spawner: true
+      Egg: true
+      Breeding: false
+      IronGolem: false
+"alexsmobs:bear":
+  MultiverseControl: true
+  WorldName:
+    world:
+      AllSpawn: true
+      Natural: true
+      Custom: true
+      Spawner: true
+      Egg: true
+      Breeding: true
+      IronGolem: false
