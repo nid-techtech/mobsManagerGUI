@@ -370,13 +370,15 @@ export default function App() {
 
                     return (
                       <tr key={mob.name}>
-                        <td className="mob-name-cell">
-                          {mob.name}
-                          {searchQuery && (
-                            <span className="mod-label-hint">
-                              by [{mob.modId === 'minecraft' ? t.vanilla : mob.modId}]
-                            </span>
-                          )}
+                        <td>
+                          <div className="mob-name-cell">
+                            {mob.name}
+                            {searchQuery && (
+                              <span className="mod-label-hint">
+                                by [{mob.modId === 'minecraft' ? t.vanilla : mob.modId}]
+                              </span>
+                            )}
+                          </div>
                         </td>
                         <td className="group-separator">
                           <input 
@@ -695,12 +697,14 @@ export default function App() {
           color: #888;
           border-bottom: 1px solid var(--border-color);
           z-index: 20;
+          box-sizing: border-box;
         }
 
         .mobs-table td {
           padding: 14px 12px;
           border-bottom: 1px solid var(--border-color);
           transition: background-color 0.1s;
+          box-sizing: border-box;
         }
 
         .group-separator {
