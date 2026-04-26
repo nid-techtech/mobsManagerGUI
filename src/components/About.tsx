@@ -10,8 +10,8 @@ const About: React.FC = () => {
     if (savedLang) {
       setLang(savedLang);
     } else {
-      const systemLang = navigator.language.startsWith('ja') ? 'ja' : 
-                         navigator.language.startsWith('zh') ? 'zh' : 'en';
+      const systemLang = navigator.language.startsWith('ja') ? 'ja' :
+        navigator.language.startsWith('zh') ? 'zh' : 'en';
       setLang(systemLang);
     }
   }, []);
@@ -42,15 +42,15 @@ const About: React.FC = () => {
         if (typeof part === 'string') {
           const split = part.split(pattern);
           const matches = part.match(pattern);
-          
+
           if (matches) {
             split.forEach((s, i) => {
               newParts.push(s);
               if (i < matches.length) {
                 newParts.push(
-                  <span 
-                    key={`link-${url}-${partIdx}-${i}`} 
-                    className="link" 
+                  <span
+                    key={`link-${url}-${partIdx}-${i}`}
+                    className="link"
                     onClick={() => handleLinkClick(url)}
                   >
                     {matches[i]}
@@ -74,12 +74,9 @@ const About: React.FC = () => {
   return (
     <div className="about-container">
       <div className="about-content">
-        <div className="app-icon">
-          <img src="/favicon.svg" alt="App Icon" />
-        </div>
         <h1 className="app-title">{t.appTitle}</h1>
         <p className="app-version">{t.version}</p>
-        
+
         <div className="credits">
           <p className="copyright">{renderWithLinks(t.copyright)}</p>
           <p className="authors">{renderWithLinks(t.authors)}</p>
@@ -110,14 +107,9 @@ const About: React.FC = () => {
           gap: 16px;
         }
 
-        .app-icon img {
-          width: 80px;
-          height: 80px;
-          filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1));
-        }
 
         .app-title {
-          margin: 0;
+          margin: 24px 0 0 0;
           font-family: var(--font-title);
           font-size: 24px;
           color: var(--accent-color);
@@ -137,7 +129,7 @@ const About: React.FC = () => {
         }
 
         .disclaimer-box {
-          margin-top: 16px;
+          margin-top: 8px;
           padding: 12px;
           background: var(--sidebar-bg);
           border-radius: 8px;

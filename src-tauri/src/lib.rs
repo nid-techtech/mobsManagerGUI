@@ -190,7 +190,7 @@ pub fn run() {
                 tauri::WebviewUrl::App("about".into())
               )
               .title("このアプリについて")
-              .inner_size(400.0, 320.0)
+              .inner_size(400.0, 370.0)
               .resizable(false)
               .always_on_top(true)
               .build();
