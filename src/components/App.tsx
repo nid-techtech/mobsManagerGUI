@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { open } from '@tauri-apps/plugin-dialog';
-import { translations, Language } from '../i18n/translations';
+import { translations, type Language } from '../i18n/translations';
 
 interface MobEntry {
   class_name: string;
