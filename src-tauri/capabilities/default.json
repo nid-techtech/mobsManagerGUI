@@ -9,6 +9,7 @@
     "core:default",
     "dialog:default",
     "fs:default",
-    "shell:default"
+    "shell:default",
+    "app:allow-custom-commands"
   ]
 }

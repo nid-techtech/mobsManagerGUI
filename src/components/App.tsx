@@ -154,7 +154,7 @@ export default function App() {
       if (b === 'minecraft') return 1;
       return a.localeCompare(b);
     });
-  }, [data]);
+  }, [data, vanillaMobs, multiWordMods]);
 
   const filteredMobs = useMemo(() => {
     if (!data) return [];
@@ -180,7 +180,7 @@ export default function App() {
     });
 
     return Object.values(mobGroups).sort((a, b) => a.name.localeCompare(b.name));
-  }, [data, selectedMod, searchQuery, mobUIState]);
+  }, [data, selectedMod, searchQuery, mobUIState, vanillaMobs, multiWordMods]);
 
   const updateMobValue = (mobName: string, field: keyof MobEntry, value: any, worldName: string) => {
     if (!data) return;

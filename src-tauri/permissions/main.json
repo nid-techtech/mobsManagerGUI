@@ -1,0 +1,9 @@
+{
+  "identifier": "allow-custom-commands",
+  "description": "Enables custom commands for the app.",
+  "commands": [
+    "load_mobs_data",
+    "save_mobs_data",
+    "read_resource_file"
+  ]
+}
