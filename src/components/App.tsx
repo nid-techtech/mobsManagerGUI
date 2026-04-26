@@ -336,7 +336,7 @@ export default function App() {
                 {mods.map(mod => (
                   <button 
                     key={mod} 
-                    className={`mod-tab ${selectedMod === mod ? 'active' : ''}`}
+                    className={`mod-tab ${!searchQuery && selectedMod === mod ? 'active' : ''}`}
                     onClick={() => setSelectedMod(mod)}
                   >
                     {mod === 'minecraft' ? t.vanilla : mod}
