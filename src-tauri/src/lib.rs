@@ -116,6 +116,7 @@ pub fn run() {
               .title("環境設定")
               .inner_size(400.0, 450.0)
               .resizable(false)
+              .always_on_top(true)
               .build();
             }
           }
