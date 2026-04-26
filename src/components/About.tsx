@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { translations, type Language } from '../i18n/translations';
+import { open } from '@tauri-apps/plugin-shell';
 
 const About: React.FC = () => {
   const [lang, setLang] = useState<Language>('ja');
@@ -17,6 +18,59 @@ const About: React.FC = () => {
 
   const t = translations[lang];
 
+  const handleLinkClick = async (url: string) => {
+    try {
+      await open(url);
+    } catch (error) {
+      console.error('Failed to open link:', error);
+    }
+  };
+
+  const renderWithLinks = (text: string) => {
+    const links = [
+      { pattern: /Stellionix/g, url: 'https://github.com/Stellionix' },
+      { pattern: /大渕凜/g, url: 'https://github.com/rinfromniigata' },
+      { pattern: /Ofuchi Rin/g, url: 'https://github.com/rinfromniigata' },
+      { pattern: /Apache 2\.0/g, url: 'https://github.com/nid-techtech/mobsManagerGUI/blob/main/LICENSE' },
+    ];
+
+    let parts: (string | React.ReactNode)[] = [text];
+
+    links.forEach(({ pattern, url }) => {
+      const newParts: (string | React.ReactNode)[] = [];
+      parts.forEach((part, partIdx) => {
+        if (typeof part === 'string') {
+          const split = part.split(pattern);
+          const matches = part.match(pattern);
+          
+          if (matches) {
+            split.forEach((s, i) => {
+              newParts.push(s);
+              if (i < matches.length) {
+                newParts.push(
+                  <span 
+                    key={`link-${url}-${partIdx}-${i}`} 
+                    className="link" 
+                    onClick={() => handleLinkClick(url)}
+                  >
+                    {matches[i]}
+                  </span>
+                );
+              }
+            });
+          } else {
+            newParts.push(part);
+          }
+        } else {
+          newParts.push(part);
+        }
+      });
+      parts = newParts;
+    });
+
+    return parts;
+  };
+
   return (
     <div className="about-container">
       <div className="about-content">
@@ -27,12 +81,12 @@ const About: React.FC = () => {
         <p className="app-version">{t.version}</p>
         
         <div className="credits">
-          <p className="copyright">{t.copyright}</p>
-          <p className="authors">{t.authors}</p>
+          <p className="copyright">{renderWithLinks(t.copyright)}</p>
+          <p className="authors">{renderWithLinks(t.authors)}</p>
         </div>
 
         <div className="disclaimer-box">
-          <p>{t.disclaimer}</p>
+          <p>{renderWithLinks(t.disclaimer)}</p>
         </div>
       </div>
 
@@ -94,6 +148,17 @@ const About: React.FC = () => {
           max-width: 340px;
           opacity: 0.7;
           white-space: pre-wrap;
+        }
+
+        .link {
+          color: var(--accent-color);
+          text-decoration: underline;
+          cursor: pointer;
+          transition: opacity 0.2s;
+        }
+
+        .link:hover {
+          opacity: 0.8;
         }
       `}</style>
     </div>
