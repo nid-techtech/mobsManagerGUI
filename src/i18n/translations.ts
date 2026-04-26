@@ -3,6 +3,7 @@ export const translations = {
     // Main Window
     appTitle: "Mobs Manager Editor",
     importFile: "mobsData.ymlをインポート",
+    importHelp: "通常、`mobsData.yml` ファイルは `./serverFiles/plugins/MobsManager/`の中にあります",
     saveFile: "上書き保存",
     backupEnabled: "バックアップを有効にする",
     aboutApp: "このアプリについて",
@@ -52,6 +53,7 @@ export const translations = {
     // Main Window
     appTitle: "Mobs Manager Editor",
     importFile: "Import mobsData.yml",
+    importHelp: "Usually, the `mobsData.yml` file is located in `./serverFiles/plugins/MobsManager/`",
     saveFile: "Save Changes",
     backupEnabled: "Enable Backup",
     aboutApp: "About this App",
@@ -101,6 +103,7 @@ export const translations = {
     // Main Window
     appTitle: "Mobs Manager Editor",
     importFile: "导入 mobsData.yml",
+    importHelp: "通常，`mobsData.yml` 文件位于 `./serverFiles/plugins/MobsManager/` 中",
     saveFile: "保存更改",
     backupEnabled: "启用备份",
     aboutApp: "关于此应用",

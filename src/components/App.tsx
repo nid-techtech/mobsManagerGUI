@@ -358,6 +358,7 @@ export default function App() {
         {!data ? (
           <div className="welcome-screen">
             <button type="button" className="large-button" onClick={() => { console.log('Large Import clicked'); handleImport(); }}>{t.importFile}</button>
+            <p className="import-help">{t.importHelp}</p>
           </div>
         ) : (
           <>
@@ -640,6 +641,16 @@ export default function App() {
         .large-button:hover {
           transform: translateY(-4px) scale(1.02);
           box-shadow: 0 15px 30px rgba(79, 70, 229, 0.4);
+        }
+
+        .import-help {
+          margin-top: 24px;
+          font-size: 14px;
+          color: var(--text-color);
+          opacity: 0.6;
+          max-width: 80%;
+          text-align: center;
+          line-height: 1.6;
         }
 
         .app-sidebar {
