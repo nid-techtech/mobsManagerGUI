@@ -390,7 +390,7 @@ export default function App() {
                             }))}
                           />
                         </td>
-                        <td>
+                        <td className="sub-separator">
                           <select 
                             disabled={mob.multiverseControl}
                             value={mob.selectedDimension}
@@ -411,7 +411,7 @@ export default function App() {
                             onChange={e => updateMobValue(mob.name, 'AllSpawn', e.target.checked, currentEntry.WorldName)}
                           />
                         </td>
-                        <td>
+                        <td className="sub-separator">
                           <input 
                             type="checkbox" 
                             disabled={!currentEntry.AllSpawn}
@@ -710,6 +710,11 @@ export default function App() {
         .group-separator {
           border-left: 1px solid var(--border-color);
           border-left-color: rgba(128, 128, 128, 0.2);
+        }
+
+        .sub-separator {
+          border-left: 1px solid var(--border-color);
+          border-left-color: rgba(128, 128, 128, 0.08);
         }
 
         .mob-name-cell {
