@@ -1,11 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import { listen } from '@tauri-apps/api/event';
 import { translations, type Language } from '../i18n/translations';
 import { open } from '@tauri-apps/plugin-shell';
 
 const About: React.FC = () => {
   const [lang, setLang] = useState<Language>('ja');
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
 
   useEffect(() => {
+    // Theme initialization
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+    if (savedTheme) {
+      setTheme(savedTheme);
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    }
+
+    // Language initialization
     const savedLang = localStorage.getItem('lang') as Language | null;
     if (savedLang) {
       setLang(savedLang);
@@ -14,6 +24,17 @@ const About: React.FC = () => {
         navigator.language.startsWith('zh') ? 'zh' : 'en';
       setLang(systemLang);
     }
+
+    // Listen for theme changes
+    const unlistenTheme = listen<string>('theme-changed', (event) => {
+      const newTheme = event.payload as 'light' | 'dark';
+      setTheme(newTheme);
+      document.documentElement.setAttribute('data-theme', newTheme);
+    });
+
+    return () => {
+      unlistenTheme.then(f => f());
+    };
   }, []);
 
   const t = translations[lang];
