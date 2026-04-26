@@ -241,7 +241,6 @@ export default function App() {
       <main className="app-main">
         {!data ? (
           <div className="welcome-screen">
-            <p>{t.importFile}...</p>
             <button type="button" className="large-button" onClick={() => { console.log('Large Import clicked'); handleImport(); }}>{t.importFile}</button>
           </div>
         ) : (
