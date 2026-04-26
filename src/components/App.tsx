@@ -681,7 +681,14 @@ export default function App() {
           width: 100%;
           border-collapse: separate;
           border-spacing: 0;
+          table-layout: fixed;
         }
+
+        .mobs-table th:nth-child(1) { width: 22%; }
+        .mobs-table th:nth-child(2) { width: 10%; }
+        .mobs-table th:nth-child(3) { width: 14%; }
+        .mobs-table th:nth-child(4) { width: 10%; }
+        .mobs-table th:nth-child(n+5) { width: 7.33%; }
 
         .mobs-table th {
           position: sticky;
@@ -698,6 +705,8 @@ export default function App() {
           border-bottom: 1px solid var(--border-color);
           z-index: 20;
           box-sizing: border-box;
+          white-space: normal;
+          line-height: 1.2;
         }
 
         .mobs-table td {
