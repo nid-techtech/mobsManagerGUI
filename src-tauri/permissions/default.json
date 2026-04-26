@@ -1,5 +1,4 @@
 {
-  "$schema": "https://schema.tauri.app/permission/0.1.0",
   "identifier": "default",
   "description": "Enables custom commands for the app.",
   "commands": [
