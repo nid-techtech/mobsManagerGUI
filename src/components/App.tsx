@@ -684,11 +684,18 @@ export default function App() {
           table-layout: fixed;
         }
 
-        .mobs-table th:nth-child(1) { width: 22%; }
-        .mobs-table th:nth-child(2) { width: 10%; }
-        .mobs-table th:nth-child(3) { width: 14%; }
-        .mobs-table th:nth-child(4) { width: 10%; }
-        .mobs-table th:nth-child(n+5) { width: 7.33%; }
+        .mobs-table th:nth-child(1) { width: 42%; }
+        .mobs-table th:nth-child(2) { width: 8%; text-align: center; }
+        .mobs-table th:nth-child(3) { width: 10%; text-align: center; }
+        .mobs-table th:nth-child(4) { width: 8%; text-align: center; }
+        .mobs-table th:nth-child(n+5) { width: 5.33%; text-align: center; }
+
+        .mobs-table td:nth-child(2),
+        .mobs-table td:nth-child(3),
+        .mobs-table td:nth-child(4),
+        .mobs-table td:nth-child(n+5) {
+          text-align: center;
+        }
 
         .mobs-table th {
           position: sticky;
