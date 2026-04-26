@@ -110,7 +110,7 @@ const Settings: React.FC = () => {
 
         .settings-header h1 {
           margin: 0;
-          font-family: var(--font-title);
+          font-family: var(--font-main);
           font-size: 24px;
           color: var(--accent-color);
         }
