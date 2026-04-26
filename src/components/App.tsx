@@ -73,6 +73,19 @@ export default function App() {
       setLang(event.payload as Language);
     });
 
+    // Fallback: Listen for storage events (works across windows of the same origin)
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'theme' && e.newValue) {
+        const newTheme = e.newValue as 'light' | 'dark';
+        setTheme(newTheme);
+        document.documentElement.setAttribute('data-theme', newTheme);
+      }
+      if (e.key === 'lang' && e.newValue) {
+        setLang(e.newValue as Language);
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+
     // Load resource lists
     const loadLists = async () => {
       try {
@@ -96,6 +109,7 @@ export default function App() {
     return () => {
       unlistenTheme.then(f => f());
       unlistenLang.then(f => f());
+      window.removeEventListener('storage', handleStorage);
     };
   }, []);
 

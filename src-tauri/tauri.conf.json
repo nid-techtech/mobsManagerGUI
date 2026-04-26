@@ -12,6 +12,7 @@
   "app": {
     "windows": [
       {
+        "label": "main",
         "title": "Mobs Manager Editor",
         "width": 1920,
         "height": 1080,
