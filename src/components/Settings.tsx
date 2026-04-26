@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { emit } from '@tauri-apps/api/event';
 import { invoke } from '@tauri-apps/api/core';
+import { open } from '@tauri-apps/plugin-shell';
+import { resourceDir, join, appDataDir } from '@tauri-apps/api/path';
 import { translations, type Language } from '../i18n/translations';
 
 const Settings: React.FC = () => {
@@ -43,6 +45,25 @@ const Settings: React.FC = () => {
     localStorage.setItem('lang', newLang);
     invoke('update_menu', { lang: newLang });
     emit('lang-changed', newLang);
+  };
+
+  const handleOpenModList = async () => {
+    try {
+      // In development, the resources folder is in the project root.
+      // In production, it should be in the resourceDir.
+      // For now, we try to find it relative to the executable or in resourceDir.
+      const resDir = await resourceDir();
+      const filePath = await join(resDir, 'resources', 'modsList', 'modsNameWithAboveTwoWords.md');
+      await open(filePath);
+    } catch (err) {
+      console.error('Failed to open mod list:', err);
+      // Fallback for development if resourceDir doesn't work as expected
+      try {
+        await open('resources/modsList/modsNameWithAboveTwoWords.md');
+      } catch (innerErr) {
+        console.error('Final fallback failed:', innerErr);
+      }
+    }
   };
 
   return (
@@ -90,6 +111,16 @@ const Settings: React.FC = () => {
           <div className="setting-item">
             <span className="setting-label">{t.backupEnabled}</span>
             <input type="checkbox" defaultChecked />
+          </div>
+        </section>
+
+        <section className="settings-section">
+          <h2>{t.modSetting}</h2>
+          <div className="setting-item">
+            <span className="setting-label">{t.editModList}</span>
+            <button className="action-btn" onClick={handleOpenModList}>
+              {t.openInEditor}
+            </button>
           </div>
         </section>
 
@@ -179,6 +210,21 @@ const Settings: React.FC = () => {
           height: 18px;
           cursor: pointer;
           accent-color: var(--accent-color);
+        }
+
+        .action-btn {
+          padding: 6px 12px;
+          background: var(--accent-color);
+          color: white;
+          border: none;
+          border-radius: 6px;
+          font-size: 12px;
+          cursor: pointer;
+          transition: opacity 0.2s;
+        }
+
+        .action-btn:hover {
+          opacity: 0.8;
         }
       `}</style>
     </div>

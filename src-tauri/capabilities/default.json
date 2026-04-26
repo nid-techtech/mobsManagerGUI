@@ -12,6 +12,7 @@
     "core:event:allow-listen",
     "dialog:default",
     "fs:default",
-    "shell:default"
+    "shell:default",
+    "shell:allow-open"
   ]
 }

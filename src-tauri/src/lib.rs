@@ -60,10 +60,19 @@ fn save_mobs_data(path: String, data: MobsData, backup: bool) -> Result<(), Stri
 }
 
 #[tauri::command]
-fn get_mod_lists() -> (String, String) {
-    let vanilla = include_str!("../../resources/modsList/vanilla.md");
-    let multi_word = include_str!("../../resources/modsList/modsNameWithAboveTwoWords.md");
-    (vanilla.to_string(), multi_word.to_string())
+fn get_mod_lists(handle: tauri::AppHandle) -> (String, String) {
+    let vanilla_bundled = include_str!("../../resources/modsList/vanilla.md");
+    let multi_word_bundled = include_str!("../../resources/modsList/modsNameWithAboveTwoWords.md");
+
+    let resource_dir = handle.path().resource_dir().unwrap_or_default();
+    
+    let vanilla_path = resource_dir.join("resources/modsList/vanilla.md");
+    let multi_word_path = resource_dir.join("resources/modsList/modsNameWithAboveTwoWords.md");
+
+    let vanilla = fs::read_to_string(vanilla_path).unwrap_or_else(|_| vanilla_bundled.to_string());
+    let multi_word = fs::read_to_string(multi_word_path).unwrap_or_else(|_| multi_word_bundled.to_string());
+
+    (vanilla, multi_word)
 }
 
 struct MenuLabels {
