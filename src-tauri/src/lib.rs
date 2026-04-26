@@ -67,7 +67,7 @@ pub fn run() {
     .setup(|app| {
       #[cfg(target_os = "macos")]
       {
-        use tauri::menu::{Menu, Submenu, MenuItem, AboutMetadata};
+        use tauri::menu::{Menu, Submenu, MenuItem, PredefinedMenuItem, AboutMetadata};
         let handle = app.handle();
         let about_meta = AboutMetadata {
           name: Some("Mobs Manager Editor".to_string()),
@@ -79,15 +79,15 @@ pub fn run() {
         };
         
         let app_menu = Submenu::with_id(handle, "app", "App", true)?;
-        app_menu.append(&MenuItem::about(handle, None, Some(about_meta))?)?;
-        app_menu.append(&MenuItem::separator(handle)?)?;
-        app_menu.append(&MenuItem::services(handle)?)?;
-        app_menu.append(&MenuItem::separator(handle)?)?;
-        app_menu.append(&MenuItem::hide(handle)?)?;
-        app_menu.append(&MenuItem::hide_others(handle)?)?;
-        app_menu.append(&MenuItem::show_all(handle)?)?;
-        app_menu.append(&MenuItem::separator(handle)?)?;
-        app_menu.append(&MenuItem::quit(handle)?)?;
+        app_menu.append(&PredefinedMenuItem::about(handle, None, Some(about_meta))?)?;
+        app_menu.append(&PredefinedMenuItem::separator(handle)?)?;
+        app_menu.append(&PredefinedMenuItem::services(handle)?)?;
+        app_menu.append(&PredefinedMenuItem::separator(handle)?)?;
+        app_menu.append(&PredefinedMenuItem::hide(handle, None)?)?;
+        app_menu.append(&PredefinedMenuItem::hide_others(handle, None)?)?;
+        app_menu.append(&PredefinedMenuItem::show_all(handle, None)?)?;
+        app_menu.append(&PredefinedMenuItem::separator(handle)?)?;
+        app_menu.append(&PredefinedMenuItem::quit(handle, None)?)?;
 
         let menu = Menu::with_items(handle, &[&app_menu])?;
         app.set_menu(menu)?;
