@@ -25,15 +25,35 @@ const About: React.FC = () => {
       setLang(systemLang);
     }
 
-    // Listen for theme changes
+    // Listen for theme changes (Tauri Event)
     const unlistenTheme = listen<string>('theme-changed', (event) => {
       const newTheme = event.payload as 'light' | 'dark';
       setTheme(newTheme);
       document.documentElement.setAttribute('data-theme', newTheme);
     });
 
+    // Listen for language changes (Tauri Event)
+    const unlistenLang = listen<string>('lang-changed', (event) => {
+      setLang(event.payload as Language);
+    });
+
+    // Fallback: Listen for storage events (Standard Browser Event)
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === 'theme' && e.newValue) {
+        const newTheme = e.newValue as 'light' | 'dark';
+        setTheme(newTheme);
+        document.documentElement.setAttribute('data-theme', newTheme);
+      }
+      if (e.key === 'lang' && e.newValue) {
+        setLang(e.newValue as Language);
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+
     return () => {
       unlistenTheme.then(f => f());
+      unlistenLang.then(f => f());
+      window.removeEventListener('storage', handleStorage);
     };
   }, []);
 
