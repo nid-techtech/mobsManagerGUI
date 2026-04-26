@@ -525,7 +525,7 @@ export default function App() {
         }
 
         [data-theme='dark'] {
-          --glass-bg: rgba(15, 23, 42, 0.8);
+          --glass-bg: rgba(30, 41, 59, 0.8);
           --glass-border: rgba(255, 255, 255, 0.1);
           --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
