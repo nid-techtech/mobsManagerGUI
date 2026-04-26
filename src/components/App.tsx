@@ -349,9 +349,9 @@ export default function App() {
                 <thead>
                   <tr>
                     <th>{t.mobName}</th>
-                    <th className="group-separator">{t.multiverseControl}</th>
+                    <th>{t.multiverseControl}</th>
                     <th>{t.dimensions}</th>
-                    <th className="group-separator">{t.allSpawn}</th>
+                    <th>{t.allSpawn}</th>
                     <th>{t.natural}</th>
                     <th>{t.custom}</th>
                     <th>{t.spawner}</th>
@@ -708,7 +708,8 @@ export default function App() {
         }
 
         .group-separator {
-          border-left: 2px solid var(--border-color) !important;
+          border-left: 1px solid var(--border-color);
+          border-left-color: rgba(128, 128, 128, 0.2);
         }
 
         .mob-name-cell {
