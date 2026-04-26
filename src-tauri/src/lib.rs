@@ -74,7 +74,7 @@ pub fn run() {
     .setup(|app| {
       #[cfg(target_os = "macos")]
       {
-        use tauri::menu::{Menu, Submenu, PredefinedMenuItem, AboutMetadata};
+        use tauri::menu::{Menu, Submenu, MenuItem, PredefinedMenuItem, AboutMetadata};
         let handle = app.handle();
         let about_meta = AboutMetadata {
           name: Some("Mobs Manager Editor".to_string()),
@@ -85,8 +85,11 @@ pub fn run() {
           ..Default::default()
         };
         
+        let settings_menu = MenuItem::with_id(handle, "settings", "環境設定", true, Some("CmdOrCtrl+,"))?;
+        
         let app_menu = Submenu::with_id(handle, "app", "App", true)?;
         app_menu.append(&PredefinedMenuItem::about(handle, None, Some(about_meta))?)?;
+        app_menu.append(&settings_menu)?;
         app_menu.append(&PredefinedMenuItem::separator(handle)?)?;
         app_menu.append(&PredefinedMenuItem::services(handle, None)?)?;
         app_menu.append(&PredefinedMenuItem::separator(handle)?)?;
@@ -98,6 +101,25 @@ pub fn run() {
 
         let menu = Menu::with_items(handle, &[&app_menu])?;
         app.set_menu(menu)?;
+
+        app.on_menu_event(move |app, event| {
+          if event.id() == "settings" {
+            let handle = app.handle();
+            if let Some(window) = handle.get_webview_window("settings") {
+              let _ = window.set_focus();
+            } else {
+              let _ = tauri::WebviewWindowBuilder::new(
+                handle,
+                "settings",
+                tauri::WebviewUrl::App("settings".into())
+              )
+              .title("環境設定")
+              .inner_size(400.0, 450.0)
+              .resizable(false)
+              .build();
+            }
+          }
+        });
       }
 
       if cfg!(debug_assertions) {
