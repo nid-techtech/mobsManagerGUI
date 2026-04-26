@@ -13,7 +13,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Mobs Manager Editor",
+        "title": "",
         "width": 1920,
         "height": 1080,
         "resizable": true,
