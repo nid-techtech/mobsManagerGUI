@@ -65,6 +65,34 @@ pub fn run() {
     .plugin(tauri_plugin_shell::init())
     .invoke_handler(tauri::generate_handler![load_mobs_data, save_mobs_data])
     .setup(|app| {
+      #[cfg(target_os = "macos")]
+      {
+        use tauri::menu::{Menu, Submenu, MenuItem, AboutMetadata};
+        let handle = app.handle();
+        let about_meta = AboutMetadata {
+          name: Some("Mobs Manager Editor".to_string()),
+          version: Some(handle.package_info().version.to_string()),
+          copyright: Some("© 2026 Stellionix / Mobs Manager GUI".to_string()),
+          authors: Some(vec!["nid-techtech".to_string()]),
+          comments: Some("This app is not affiliated with Microsoft, Mojang, or Stellionix (developer of MobsManager).".to_string()),
+          ..Default::default()
+        };
+        
+        let app_menu = Submenu::with_id(handle, "app", "App", true)?;
+        app_menu.append(&MenuItem::about(handle, None, Some(about_meta))?)?;
+        app_menu.append(&MenuItem::separator(handle)?)?;
+        app_menu.append(&MenuItem::services(handle)?)?;
+        app_menu.append(&MenuItem::separator(handle)?)?;
+        app_menu.append(&MenuItem::hide(handle)?)?;
+        app_menu.append(&MenuItem::hide_others(handle)?)?;
+        app_menu.append(&MenuItem::show_all(handle)?)?;
+        app_menu.append(&MenuItem::separator(handle)?)?;
+        app_menu.append(&MenuItem::quit(handle)?)?;
+
+        let menu = Menu::with_items(handle, &[&app_menu])?;
+        app.set_menu(menu)?;
+      }
+
       if cfg!(debug_assertions) {
         app.handle().plugin(
           tauri_plugin_log::Builder::default()

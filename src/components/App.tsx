@@ -177,8 +177,8 @@ export default function App() {
       <header className="app-header">
         <h1 className="pixel-title">{t.appTitle}</h1>
         <div className="header-actions">
-          <button onClick={handleImport}>{t.importFile}</button>
-          <button onClick={handleSave} disabled={!data}>{t.saveFile}</button>
+          <button type="button" className="action-btn" onClick={() => { console.log('Import clicked'); handleImport(); }}>{t.importFile}</button>
+          <button type="button" className="action-btn" onClick={() => { console.log('Save clicked'); handleSave(); }} disabled={!data}>{t.saveFile}</button>
           <div className="backup-toggle">
             <input 
               type="checkbox" 
@@ -188,13 +188,13 @@ export default function App() {
             />
             <label htmlFor="backup-check">{t.backupEnabled}</label>
           </div>
-          <button onClick={() => setLang(lang === 'ja' ? 'en' : 'ja')}>
+          <button type="button" className="action-btn" onClick={() => { console.log('Lang clicked'); setLang(lang === 'ja' ? 'en' : 'ja'); }}>
             {lang === 'ja' ? 'English' : '日本語'}
           </button>
-          <button onClick={toggleTheme}>
+          <button type="button" className="action-btn" onClick={() => { console.log('Theme clicked'); toggleTheme(); }}>
             {theme === 'light' ? '🌙' : '☀️'}
           </button>
-          <button onClick={() => setShowAbout(true)}>ℹ️</button>
+          <button type="button" className="action-btn" onClick={() => { console.log('Info clicked'); setShowAbout(true); }}>ℹ️</button>
         </div>
       </header>
       
@@ -202,7 +202,7 @@ export default function App() {
         {!data ? (
           <div className="welcome-screen">
             <p>{t.importFile}...</p>
-            <button className="large-button" onClick={handleImport}>{t.importFile}</button>
+            <button type="button" className="large-button" onClick={() => { console.log('Large Import clicked'); handleImport(); }}>{t.importFile}</button>
           </div>
         ) : (
           <>
@@ -401,15 +401,32 @@ export default function App() {
           gap: 12px;
         }
 
-        .header-actions button {
+        .header-actions .action-btn {
+          padding: 8px 16px;
+          border: 1px solid var(--border-color);
+          background: var(--sidebar-bg);
+          color: var(--text-color);
           transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
           border-radius: 8px;
           font-weight: 500;
+          cursor: pointer;
+          font-family: var(--font-main);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          min-width: 40px;
         }
 
-        .header-actions button:hover:not(:disabled) {
+        .header-actions .action-btn:hover:not(:disabled) {
           transform: translateY(-1px);
-          box-shadow: 0 4px 8px rgba(59, 130, 246, 0.2);
+          background: var(--bg-color);
+          border-color: var(--accent-color);
+          box-shadow: 0 4px 8px rgba(59, 130, 246, 0.15);
+        }
+
+        .header-actions .action-btn:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
         }
 
         .backup-toggle {
