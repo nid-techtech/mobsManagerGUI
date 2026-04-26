@@ -4,16 +4,16 @@ import { open } from '@tauri-apps/plugin-dialog';
 import { translations, type Language } from '../i18n/translations';
 
 interface MobEntry {
-  class_name: string;
-  name: string;
-  world_name: string;
-  all_spawn: boolean;
-  natural_spawn: boolean;
-  custom_spawn: boolean;
-  spawner_spawn: boolean;
-  egg_spawn: boolean;
-  breeding_spawn: boolean;
-  iron_golem_spawn: boolean;
+  '==': string;
+  Name: string;
+  WorldName: string;
+  AllSpawn: boolean;
+  NaturalSpawn: boolean;
+  CustomSpawn: boolean;
+  SpawnerSpawn: boolean;
+  EggSpawn: boolean;
+  BreedingSpawn: boolean;
+  IronGolemSpawn: boolean;
 }
 
 interface MobsData {
@@ -61,22 +61,26 @@ export default function App() {
 
   const handleImport = async () => {
     try {
+      console.log('Opening file dialog...');
       const selected = await open({
         multiple: false,
         filters: [{ name: 'YAML', extensions: ['yml', 'yaml'] }]
       });
       if (selected && typeof selected === 'string') {
+        console.log('Selected file:', selected);
         const loadedData = await invoke<MobsData>('load_mobs_data', { path: selected });
+        console.log('Loaded data count:', loadedData.mobs.length);
+        
         setData(loadedData);
         setFilePath(selected);
         
         // Initialize UI state
         const initialUIState: any = {};
         loadedData.mobs.forEach(mob => {
-          if (!initialUIState[mob.name]) {
-            initialUIState[mob.name] = {
+          if (!initialUIState[mob.Name]) {
+            initialUIState[mob.Name] = {
               multiverseControl: true, // Default to true as per common use case
-              selectedDimension: mob.world_name
+              selectedDimension: mob.WorldName
             };
           }
         });
@@ -104,8 +108,8 @@ export default function App() {
     const modSet = new Set<string>();
     data.mobs.forEach(mob => {
       let modId = 'minecraft';
-      if (mob.name.includes(':')) modId = mob.name.split(':')[0];
-      else if (mob.name.includes('_')) modId = mob.name.split('_')[0];
+      if (mob.Name.includes(':')) modId = mob.Name.split(':')[0];
+      else if (mob.Name.includes('_')) modId = mob.Name.split('_')[0];
       modSet.add(modId);
     });
     return Array.from(modSet).sort((a, b) => {
@@ -121,21 +125,23 @@ export default function App() {
     
     data.mobs.forEach(mob => {
       let modId = 'minecraft';
-      if (mob.name.includes(':')) modId = mob.name.split(':')[0];
-      else if (mob.name.includes('_')) modId = mob.name.split('_')[0];
+      if (mob.Name.includes(':')) modId = mob.Name.split(':')[0];
+      else if (mob.Name.includes('_')) modId = mob.Name.split('_')[0];
 
       if (modId !== selectedMod) return;
-      if (searchQuery && !mob.name.toLowerCase().includes(searchQuery.toLowerCase())) return;
+      if (searchQuery && !mob.Name.toLowerCase().includes(searchQuery.toLowerCase())) return;
 
-      if (!mobGroups[mob.name]) {
-        mobGroups[mob.name] = {
-          name: mob.name,
-          multiverseControl: mobUIState[mob.name]?.multiverseControl ?? true,
-          selectedDimension: mobUIState[mob.name]?.selectedDimension ?? mob.world_name,
+      if (!mobGroups[mob.Name]) {
+        mobGroups[mob.Name] = {
+          name: mob.Name,
+          multiverseControl: mobUIState[mob.Name]?.multiverseControl ?? true,
+          selectedDimension: mobUIState[mob.Name]?.selectedDimension ?? mob.WorldName,
           worlds: []
         };
       }
-      mobGroups[mob.name].worlds.push(mob.world_name);
+      if (!mobGroups[mob.Name].worlds.includes(mob.WorldName)) {
+        mobGroups[mob.Name].worlds.push(mob.WorldName);
+      }
     });
 
     return Object.values(mobGroups).sort((a, b) => a.name.localeCompare(b.name));
@@ -146,17 +152,17 @@ export default function App() {
     const isControl = mobUIState[mobName]?.multiverseControl;
     
     const newData = { ...data, mobs: data.mobs.map(mob => {
-      if (mob.name === mobName) {
-        if (isControl || mob.world_name === worldName) {
+      if (mob.Name === mobName) {
+        if (isControl || mob.WorldName === worldName) {
           const updatedMob = { ...mob, [field]: value };
-          // If all_spawn is set to false, reset other spawn reasons
-          if (field === 'all_spawn' && value === false) {
-            updatedMob.natural_spawn = false;
-            updatedMob.custom_spawn = false;
-            updatedMob.spawner_spawn = false;
-            updatedMob.egg_spawn = false;
-            updatedMob.breeding_spawn = false;
-            updatedMob.iron_golem_spawn = false;
+          // If AllSpawn is set to false, reset other spawn reasons
+          if (field === 'AllSpawn' && value === false) {
+            updatedMob.NaturalSpawn = false;
+            updatedMob.CustomSpawn = false;
+            updatedMob.SpawnerSpawn = false;
+            updatedMob.EggSpawn = false;
+            updatedMob.BreedingSpawn = false;
+            updatedMob.IronGolemSpawn = false;
           }
           return updatedMob;
         }
@@ -215,15 +221,17 @@ export default function App() {
                   onChange={e => setSearchQuery(e.target.value)}
                 />
               </div>
-              {mods.map(mod => (
-                <button 
-                  key={mod} 
-                  className={`mod-tab ${selectedMod === mod ? 'active' : ''}`}
-                  onClick={() => setSelectedMod(mod)}
-                >
-                  {mod === 'minecraft' ? t.vanilla : mod}
-                </button>
-              ))}
+              <div className="mod-tabs-container">
+                {mods.map(mod => (
+                  <button 
+                    key={mod} 
+                    className={`mod-tab ${selectedMod === mod ? 'active' : ''}`}
+                    onClick={() => setSelectedMod(mod)}
+                  >
+                    {mod === 'minecraft' ? t.vanilla : mod}
+                  </button>
+                ))}
+              </div>
             </aside>
             <section className="app-content">
               <table className="mobs-table">
@@ -244,8 +252,8 @@ export default function App() {
                 <tbody>
                   {filteredMobs.map(mob => {
                     const currentEntry = data.mobs.find(m => 
-                      m.name === mob.name && 
-                      m.world_name === (mob.multiverseControl ? mob.worlds[0] : mob.selectedDimension)
+                      m.Name === mob.name && 
+                      m.WorldName === (mob.multiverseControl ? mob.worlds[0] : mob.selectedDimension)
                     );
                     if (!currentEntry) return null;
 
@@ -279,56 +287,56 @@ export default function App() {
                         <td>
                           <input 
                             type="checkbox" 
-                            checked={currentEntry.all_spawn}
-                            onChange={e => updateMobValue(mob.name, 'all_spawn', e.target.checked, mob.selectedDimension)}
+                            checked={currentEntry.AllSpawn}
+                            onChange={e => updateMobValue(mob.name, 'AllSpawn', e.target.checked, currentEntry.WorldName)}
                           />
                         </td>
                         <td>
                           <input 
                             type="checkbox" 
-                            disabled={!currentEntry.all_spawn}
-                            checked={currentEntry.natural_spawn}
-                            onChange={e => updateMobValue(mob.name, 'natural_spawn', e.target.checked, mob.selectedDimension)}
+                            disabled={!currentEntry.AllSpawn}
+                            checked={currentEntry.NaturalSpawn}
+                            onChange={e => updateMobValue(mob.name, 'NaturalSpawn', e.target.checked, currentEntry.WorldName)}
                           />
                         </td>
                         <td>
                           <input 
                             type="checkbox" 
-                            disabled={!currentEntry.all_spawn}
-                            checked={currentEntry.custom_spawn}
-                            onChange={e => updateMobValue(mob.name, 'custom_spawn', e.target.checked, mob.selectedDimension)}
+                            disabled={!currentEntry.AllSpawn}
+                            checked={currentEntry.CustomSpawn}
+                            onChange={e => updateMobValue(mob.name, 'CustomSpawn', e.target.checked, currentEntry.WorldName)}
                           />
                         </td>
                         <td>
                           <input 
                             type="checkbox" 
-                            disabled={!currentEntry.all_spawn}
-                            checked={currentEntry.spawner_spawn}
-                            onChange={e => updateMobValue(mob.name, 'spawner_spawn', e.target.checked, mob.selectedDimension)}
+                            disabled={!currentEntry.AllSpawn}
+                            checked={currentEntry.SpawnerSpawn}
+                            onChange={e => updateMobValue(mob.name, 'SpawnerSpawn', e.target.checked, currentEntry.WorldName)}
                           />
                         </td>
                         <td>
                           <input 
                             type="checkbox" 
-                            disabled={!currentEntry.all_spawn}
-                            checked={currentEntry.egg_spawn}
-                            onChange={e => updateMobValue(mob.name, 'egg_spawn', e.target.checked, mob.selectedDimension)}
+                            disabled={!currentEntry.AllSpawn}
+                            checked={currentEntry.EggSpawn}
+                            onChange={e => updateMobValue(mob.name, 'EggSpawn', e.target.checked, currentEntry.WorldName)}
                           />
                         </td>
                         <td>
                           <input 
                             type="checkbox" 
-                            disabled={!currentEntry.all_spawn}
-                            checked={currentEntry.breeding_spawn}
-                            onChange={e => updateMobValue(mob.name, 'breeding_spawn', e.target.checked, mob.selectedDimension)}
+                            disabled={!currentEntry.AllSpawn}
+                            checked={currentEntry.BreedingSpawn}
+                            onChange={e => updateMobValue(mob.name, 'BreedingSpawn', e.target.checked, currentEntry.WorldName)}
                           />
                         </td>
                         <td>
                           <input 
                             type="checkbox" 
-                            disabled={!currentEntry.all_spawn}
-                            checked={currentEntry.iron_golem_spawn}
-                            onChange={e => updateMobValue(mob.name, 'iron_golem_spawn', e.target.checked, mob.selectedDimension)}
+                            disabled={!currentEntry.AllSpawn}
+                            checked={currentEntry.IronGolemSpawn}
+                            onChange={e => updateMobValue(mob.name, 'IronGolemSpawn', e.target.checked, currentEntry.WorldName)}
                           />
                         </td>
                       </tr>
@@ -480,10 +488,20 @@ export default function App() {
           display: flex;
           flex-direction: column;
           z-index: 10;
+          overflow: hidden;
         }
 
         .search-box {
           padding: 20px;
+          flex-shrink: 0;
+        }
+
+        .mod-tabs-container {
+          flex: 1;
+          overflow-y: auto;
+          display: flex;
+          flex-direction: column;
+          padding-bottom: 20px;
         }
 
         .search-box input {
@@ -514,6 +532,7 @@ export default function App() {
           font-weight: 500;
           transition: all 0.2s ease;
           opacity: 0.7;
+          flex-shrink: 0;
         }
 
         .mod-tab:hover {
