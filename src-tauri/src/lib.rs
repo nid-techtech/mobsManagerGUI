@@ -236,23 +236,28 @@ fn update_app_icon(handle: tauri::AppHandle, theme: String) -> Result<(), String
     let icon_path = resource_dir.join(format!("resources/icons/icons_MobsManagerEditor/macOS/{}/icon_512x512@2x.png", theme));
     let icon_path_alt = resource_dir.join(format!("icons/icons_MobsManagerEditor/macOS/{}/icon_512x512@2x.png", theme));
     
-    let final_path = if icon_path.exists() {
-        icon_path
+    let (final_path, found) = if icon_path.exists() {
+        (icon_path.clone(), true)
     } else if icon_path_alt.exists() {
-        icon_path_alt
+        (icon_path_alt.clone(), true)
     } else {
         // 開発環境用のフォールバック (src-tauri から見た相対パス)
         let dev_path = std::env::current_dir().unwrap_or_default().join(format!("../resources/icons/icons_MobsManagerEditor/macOS/{}/icon_512x512@2x.png", theme));
         if dev_path.exists() {
-            dev_path
+            (dev_path.clone(), true)
         } else {
             // プロジェクトルートから見た相対パス
-            std::env::current_dir().unwrap_or_default().join(format!("resources/icons/icons_MobsManagerEditor/macOS/{}/icon_512x512@2x.png", theme))
+            let root_path = std::env::current_dir().unwrap_or_default().join(format!("resources/icons/icons_MobsManagerEditor/macOS/{}/icon_512x512@2x.png", theme));
+            if root_path.exists() {
+                (root_path.clone(), true)
+            } else {
+                (root_path.clone(), false)
+            }
         }
     };
 
-    if !final_path.exists() {
-        return Err(format!("Icon not found at {:?}", final_path));
+    if !found {
+        return Err(format!("Icon not found. Tried: {:?}, {:?}, etc. CWD: {:?}", icon_path, icon_path_alt, std::env::current_dir()));
     }
 
     let bytes = std::fs::read(final_path).map_err(|e| e.to_string())?;
