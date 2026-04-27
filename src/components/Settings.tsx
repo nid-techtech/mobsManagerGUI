@@ -49,20 +49,9 @@ const Settings: React.FC = () => {
 
   const handleOpenModList = async () => {
     try {
-      // In development, the resources folder is in the project root.
-      // In production, it should be in the resourceDir.
-      // For now, we try to find it relative to the executable or in resourceDir.
-      const resDir = await resourceDir();
-      const dirPath = await join(resDir, 'resources', 'modsList');
-      await open(dirPath);
+      await invoke('open_mod_folder');
     } catch (err) {
       console.error('Failed to open mod list directory:', err);
-      // Fallback for development if resourceDir doesn't work as expected
-      try {
-        await open('resources/modsList');
-      } catch (innerErr) {
-        console.error('Final fallback failed:', innerErr);
-      }
     }
   };
 

@@ -60,6 +60,47 @@ fn save_mobs_data(path: String, data: MobsData, backup: bool) -> Result<(), Stri
 }
 
 #[tauri::command]
+fn open_mod_folder(handle: tauri::AppHandle) -> Result<(), String> {
+    let resource_dir = handle.path().resource_dir().unwrap_or_default();
+    let path = resource_dir.join("resources/modsList");
+    
+    let final_path = if path.exists() {
+        path
+    } else {
+        // Dev fallback
+        let dev_path = std::env::current_dir().unwrap_or_default().join("../resources/modsList");
+        if dev_path.exists() {
+            dev_path
+        } else {
+            return Err("Mod list directory not found".to_string());
+        }
+    };
+
+    #[cfg(target_os = "macos")]
+    {
+        std::process::Command::new("open")
+            .arg(final_path)
+            .spawn()
+            .map_err(|e| e.to_string())?;
+    }
+    #[cfg(target_os = "windows")]
+    {
+        std::process::Command::new("explorer")
+            .arg(final_path)
+            .spawn()
+            .map_err(|e| e.to_string())?;
+    }
+    #[cfg(not(any(target_os = "macos", target_os = "windows")))]
+    {
+        std::process::Command::new("xdg-open")
+            .arg(final_path)
+            .spawn()
+            .map_err(|e| e.to_string())?;
+    }
+    Ok(())
+}
+
+#[tauri::command]
 fn get_mod_lists(handle: tauri::AppHandle) -> (String, String) {
     let vanilla_bundled = include_str!("../../resources/modsList/vanilla.md");
     let multi_word_bundled = include_str!("../../resources/modsList/modsNameWithAboveTwoWords.md");
@@ -193,7 +234,7 @@ pub fn run() {
     .plugin(tauri_plugin_fs::init())
     .plugin(tauri_plugin_dialog::init())
     .plugin(tauri_plugin_shell::init())
-    .invoke_handler(tauri::generate_handler![load_mobs_data, save_mobs_data, get_mod_lists, update_menu])
+    .invoke_handler(tauri::generate_handler![load_mobs_data, save_mobs_data, get_mod_lists, update_menu, open_mod_folder])
     .setup(|app| {
       #[cfg(target_os = "macos")]
       {
