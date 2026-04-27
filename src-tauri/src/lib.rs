@@ -184,7 +184,7 @@ fn get_menu_labels(lang: &str) -> MenuLabels {
 }
 
 fn create_app_menu<R: tauri::Runtime>(handle: &tauri::AppHandle<R>, lang: &str) -> tauri::Result<tauri::menu::Menu<R>> {
-    use tauri::menu::{Menu, Submenu, MenuItem, PredefinedMenuItem, AboutMetadata};
+    use tauri::menu::{Menu, Submenu, MenuItem, PredefinedMenuItem};
     
     let labels = get_menu_labels(lang);
     
@@ -259,7 +259,7 @@ fn update_app_icon(handle: tauri::AppHandle, theme: String) -> Result<(), String
     let image = tauri::image::Image::from_bytes(&bytes).map_err(|e| e.to_string())?;
     
     for window in handle.webview_windows().values() {
-        let _ = window.set_icon(Some(image.clone()));
+        let _ = window.set_icon(image.clone());
     }
     
     Ok(())
