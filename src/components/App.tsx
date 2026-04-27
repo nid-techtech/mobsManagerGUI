@@ -95,6 +95,13 @@ export default function App() {
     if (savedTheme) {
       setTheme(savedTheme);
       document.documentElement.setAttribute('data-theme', savedTheme);
+      invoke('update_app_icon', { theme: savedTheme });
+    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      setTheme('dark');
+      document.documentElement.setAttribute('data-theme', 'dark');
+      invoke('update_app_icon', { theme: 'dark' });
+    } else {
+      invoke('update_app_icon', { theme: 'light' });
     }
     
     const savedLang = localStorage.getItem('lang') as Language;
@@ -111,6 +118,7 @@ export default function App() {
       const newTheme = event.payload as 'light' | 'dark';
       setTheme(newTheme);
       document.documentElement.setAttribute('data-theme', newTheme);
+      invoke('update_app_icon', { theme: newTheme });
     });
 
     const unlistenLang = listen<string>('lang-changed', (event) => {

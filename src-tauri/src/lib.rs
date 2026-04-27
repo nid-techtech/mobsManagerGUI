@@ -228,13 +228,50 @@ fn update_menu(handle: tauri::AppHandle, lang: String) -> Result<(), String> {
     Ok(())
 }
 
+#[tauri::command]
+fn update_app_icon(handle: tauri::AppHandle, theme: String) -> Result<(), String> {
+    let resource_dir = handle.path().resource_dir().unwrap_or_default();
+    
+    // macOS用の高解像度アイコン（512x512@2x = 1024x1024）を使用
+    let icon_path = resource_dir.join(format!("resources/icons/icons_MobsManagerEditor/macOS/{}/icon_512x512@2x.png", theme));
+    let icon_path_alt = resource_dir.join(format!("icons/icons_MobsManagerEditor/macOS/{}/icon_512x512@2x.png", theme));
+    
+    let final_path = if icon_path.exists() {
+        icon_path
+    } else if icon_path_alt.exists() {
+        icon_path_alt
+    } else {
+        // 開発環境用のフォールバック (src-tauri から見た相対パス)
+        let dev_path = std::env::current_dir().unwrap_or_default().join(format!("../resources/icons/icons_MobsManagerEditor/macOS/{}/icon_512x512@2x.png", theme));
+        if dev_path.exists() {
+            dev_path
+        } else {
+            // プロジェクトルートから見た相対パス
+            std::env::current_dir().unwrap_or_default().join(format!("resources/icons/icons_MobsManagerEditor/macOS/{}/icon_512x512@2x.png", theme))
+        }
+    };
+
+    if !final_path.exists() {
+        return Err(format!("Icon not found at {:?}", final_path));
+    }
+
+    let bytes = std::fs::read(final_path).map_err(|e| e.to_string())?;
+    let image = tauri::image::Image::from_bytes(&bytes).map_err(|e| e.to_string())?;
+    
+    for window in handle.webview_windows().values() {
+        let _ = window.set_icon(Some(image.clone()));
+    }
+    
+    Ok(())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
   tauri::Builder::default()
     .plugin(tauri_plugin_fs::init())
     .plugin(tauri_plugin_dialog::init())
     .plugin(tauri_plugin_shell::init())
-    .invoke_handler(tauri::generate_handler![load_mobs_data, save_mobs_data, get_mod_lists, update_menu, open_mod_folder])
+    .invoke_handler(tauri::generate_handler![load_mobs_data, save_mobs_data, get_mod_lists, update_menu, open_mod_folder, update_app_icon])
     .setup(|app| {
       #[cfg(target_os = "macos")]
       {
