@@ -53,13 +53,13 @@ const Settings: React.FC = () => {
       // In production, it should be in the resourceDir.
       // For now, we try to find it relative to the executable or in resourceDir.
       const resDir = await resourceDir();
-      const filePath = await join(resDir, 'resources', 'modsList', 'modsNameWithAboveTwoWords.md');
-      await open(filePath);
+      const dirPath = await join(resDir, 'resources', 'modsList');
+      await open(dirPath);
     } catch (err) {
-      console.error('Failed to open mod list:', err);
+      console.error('Failed to open mod list directory:', err);
       // Fallback for development if resourceDir doesn't work as expected
       try {
-        await open('resources/modsList/modsNameWithAboveTwoWords.md');
+        await open('resources/modsList');
       } catch (innerErr) {
         console.error('Final fallback failed:', innerErr);
       }
